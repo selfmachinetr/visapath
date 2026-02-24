@@ -1,56 +1,18 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisaPath — Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --bg: #060d18; --sidebar: #0a1422; --accent: #3b82f6; --text: #e2e8f0; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); display: flex; margin: 0; }
-        .sidebar { width: 260px; background: var(--sidebar); height: 100vh; padding: 30px 20px; border-right: 1px solid #1e293b; position: fixed; }
-        .main { margin-left: 260px; padding: 40px; width: 100%; }
-        .pro-badge { background: linear-gradient(90deg, #f59e0b, #d97706); padding: 2px 6px; border-radius: 4px; font-size: 0.6rem; font-weight: 800; margin-left: 5px; }
-        .nav-item { padding: 12px; margin-bottom: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; color: #94a3b8; }
-        .nav-item:hover, .nav-item.active { background: #1e293b; color: white; }
-        .chance-card { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 30px; border-radius: 24px; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .blur { filter: blur(5px); background: #1e293b; padding: 2px 8px; border-radius: 4px; user-select: none; }
-        .job-card { background: #0f172a; padding: 20px; border-radius: 16px; border: 1px solid #1e293b; margin-bottom: 15px; }
-    </style>
-</head>
-<body>
-    <div class="sidebar">
-        <div style="font-family: 'Syne'; font-size: 1.5rem; font-weight: 800; color: var(--accent); margin-bottom: 40px;">VisaPath</div>
-        <div class="nav-item active">Genel Bakış</div>
-        <div class="nav-item">Şirket Yanıtları <span class="pro-badge">PRO</span></div>
-        <div class="nav-item">Vize Takibi <span class="pro-badge">PRO</span></div>
-        <div class="nav-item">Belgelerim <span class="pro-badge">PRO</span></div>
-        <div style="position: absolute; bottom: 40px;"><a href="index.html" style="color: #64748b;">← Çıkış Yap</a></div>
-    </div>
+<div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 30px; border-radius: 24px; margin-bottom: 30px; border: 1px solid #334155; display: flex; align-items: center; justify-content: space-between;">
+  <div>
+    <h3 style="font-family: 'Syne', sans-serif; font-size: 1.5rem; margin-bottom: 10px;">Vize Onay Şansın</h3>
+    <p style="color: #94a3b8;">Profilin, seçtiğin ülkenin kriterlerine %78 uyumlu.</p>
+    <button style="margin-top: 15px; padding: 10px 20px; background: #3b82f6; border-radius: 10px; font-weight: 600; font-size: 0.9rem;">Analizi Detaylandır (PRO)</button>
+  </div>
+  <div style="width: 100px; height: 100px; border-radius: 50%; border: 8px solid #1e293b; border-top-color: #3b82f6; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono'; font-weight: bold; font-size: 1.2rem;">
+    %78
+  </div>
+</div>
 
-    <div class="main">
-        <div class="chance-card">
-            <div>
-                <h2 style="font-family: 'Syne'; margin: 0;">Vize Onay Şansın</h2>
-                <p style="color: #94a3b8;">Profilin kriterlerle %78 uyumlu.</p>
-                <button style="background: var(--accent); color: white; padding: 10px 20px; border-radius: 8px; font-weight: 600; margin-top: 10px;">Analizi Detaylandır (PRO)</button>
-            </div>
-            <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent);">%78</div>
-        </div>
-
-        <h3>Önerilen Sponsorlu İlanlar</h3>
-        <div class="job-card">
-            <div style="display: flex; justify-content: space-between;">
-                <div>
-                    <strong>Senior Software Engineer</strong>
-                    <div style="color: #64748b; font-size: 0.9rem;">Siemens · Münih, Almanya</div>
-                </div>
-                <div style="text-align: right;">
-                    <div class="blur">€85,000</div>
-                    <span style="font-size: 0.7rem; color: var(--accent); font-weight: 800;">PRO İLE GÖR</span>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html>
+<div class="job-card" style="position: relative; overflow: hidden;">
+  <div style="display: flex; justify-content: space-between;">
+    <h4>Senior Developer</h4>
+    <div style="filter: blur(5px); pointer-events: none; background: #1e293b; padding: 4px 8px; border-radius: 4px;">€75,000</div>
+    <span style="position: absolute; right: 20px; top: 45px; font-size: 0.7rem; color: #3b82f6; font-weight: bold;">PRO İLE GÖR</span>
+  </div>
+</div>
