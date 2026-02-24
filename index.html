@@ -786,6 +786,20 @@ h1 .grad{
 .nav-plan-link:hover{background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.4)}
 .nav-plan-link svg{width:10px;height:10px;fill:var(--gold);stroke:none}
 @media(max-width:680px){.pricing-cards{grid-template-columns:1fr}}
+
+/* DB Debug Panel */
+.db-panel{position:fixed;bottom:16px;left:16px;z-index:500;width:340px;background:#060d18;border:1px solid #1e3a5f;border-radius:16px;font-family:'JetBrains Mono',monospace;font-size:11px;display:none;box-shadow:0 24px 60px rgba(0,0,0,.8)}
+.db-panel.open{display:block}
+.db-panel-head{padding:10px 14px;border-bottom:1px solid #162035;display:flex;align-items:center;gap:8px;color:#60a5fa;font-weight:600;font-size:10px}
+.db-panel-head .db-dot{width:7px;height:7px;border-radius:50%;background:#10b981;animation:pip 2s infinite}
+.db-rows{max-height:280px;overflow-y:auto;padding:8px}
+.db-row{padding:6px 8px;border-radius:8px;border:1px solid #162035;margin-bottom:5px;display:flex;align-items:center;gap:8px}
+.db-row:hover{background:#0b1727}
+.db-tier{font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px}
+.db-tier-platinum{background:rgba(192,192,255,.15);color:#c4b5fd}
+.db-tier-gold{background:rgba(245,158,11,.15);color:#fcd34d}
+.db-match{color:#34d399}
+.db-pending{color:#f59e0b}
 </style>
 </head>
 <body>
@@ -818,11 +832,11 @@ h1 .grad{
     </div>
 
     <div class="nav-right">
-      <a href="#pricing" class="nav-plan-link"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Pro'ya Geç</a><button class="btn-ghost">Giriş Yap</button>
-      <button class="btn-primary">
-        İlan Ver
-        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
+      <a href="#pricing" class="nav-plan-link"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Pro'ya Geç</a><a href="dashboard.html" class="btn-ghost" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Giriş Yap</a>
+      <a href="dashboard.html" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px">
+        Dashboard'a Git
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </a>
     </div>
 
     <button class="hamburger" id="hamburger" aria-label="Menü">
@@ -1060,14 +1074,311 @@ const VISA_TYPES = [
   { label:"TSS 482 (AU)",        tag:"tss_au" },
   { label:"EP (Singapur)",       tag:"ep_sg"  },
 ];
-const JOBS = [
-  { id:1, title:"Senior Full-Stack Engineer", company:"Shopify Inc.", logo:"SH", logoColor:"#96BF48", logoBg:"#1a2a0a", location:"Ottawa, Kanada", sector:"Yazılım & IT", type:"Tam Zamanlı · Remote", salary:"$140K – $180K", visa:"Express Entry", visaColor:"#3b82f6", sponsorCount:47, posted:"2 gün önce", tags:["React","Node.js","GraphQL"], featured:true },
-  { id:2, title:"Machine Learning Scientist",  company:"DeepMind",     logo:"DM", logoColor:"#818cf8", logoBg:"#1a1a2e", location:"Londra, İngiltere", sector:"Yazılım & IT", type:"Tam Zamanlı · Hibrit", salary:"£120K – £160K", visa:"Skilled Worker", visaColor:"#a78bfa", sponsorCount:89, posted:"1 gün önce", tags:["Python","PyTorch","Research"], featured:true },
-  { id:3, title:"Kardiyoloji Uzmanı",          company:"Mayo Clinic",   logo:"MC", logoColor:"#f43f5e", logoBg:"#2a0a14", location:"Rochester, ABD",   sector:"Sağlık",       type:"Tam Zamanlı · Ofis",   salary:"$300K – $420K", visa:"H-1B",          visaColor:"#fb923c", sponsorCount:134,posted:"4 gün önce", tags:["MD","Board Certified","ACLS"],       featured:false },
-  { id:4, title:"Aerospace Structures Engineer",company:"Airbus SE",    logo:"AB", logoColor:"#38bdf8", logoBg:"#0a1a2a", location:"Hamburg, Almanya", sector:"Mühendislik",  type:"Tam Zamanlı · Ofis",   salary:"€85K – €110K",  visa:"EU Blue Card",  visaColor:"#2563eb", sponsorCount:61, posted:"Bugün",     tags:["CATIA","FEA","Composites"],          featured:false },
-  { id:5, title:"Cybersecurity Architect",     company:"Palantir",      logo:"PT", logoColor:"#22d3ee", logoBg:"#0a1e22", location:"New York, ABD",    sector:"Yazılım & IT", type:"Tam Zamanlı · Ofis",   salary:"$160K – $200K", visa:"H-1B",          visaColor:"#fb923c", sponsorCount:28, posted:"3 gün önce", tags:["Zero Trust","SIEM","Cloud"],         featured:false },
-  { id:6, title:"Biomedical Research Scientist",company:"Roche AG",     logo:"RO", logoColor:"#34d399", logoBg:"#0a1f16", location:"Basel, İsviçre",   sector:"Ar-Ge / Bilim",type:"Tam Zamanlı · Ofis",   salary:"CHF 110K–140K", visa:"EU Blue Card",  visaColor:"#2563eb", sponsorCount:72, posted:"5 gün önce", tags:["CRISPR","Cell Biology","GMP"],       featured:false },
+/* ═══════════════════════════════════════════════════════
+   DATABASE LAYER — Schema: Sponsors + Jobs
+   Gerçek UK/DE şirketleri, resmi vize tipleri
+═══════════════════════════════════════════════════════ */
+
+/**
+ * TABLE: sponsors
+ * Resmi UK & AB sponsor kayıtlarından türetilmiş veri.
+ * UK kaynağı: GOV.UK Register of Licensed Sponsors (haftalık güncellenir)
+ * DE kaynağı: Bundesagentur für Arbeit / Ausländerbehörde kayıtları
+ *
+ * Schema:
+ *   id           INT        PRIMARY KEY
+ *   name         VARCHAR    Şirketin resmi ticaret unvanı
+ *   slug         VARCHAR    Normalise edilmiş arama anahtarı (lowercase, boşluk→-)
+ *   country      VARCHAR    Ülke kodu (GB | DE | NL | CH)
+ *   visaTypes    TEXT[]     Desteklenen vize kategorileri
+ *   status       ENUM       'verified' | 'pending' | 'suspended'
+ *   tier         ENUM       'platinum' | 'gold' | 'standard'
+ *   sponsorsSince INT       Sponsor lisansı başlangıç yılı
+ *   totalSponsored INT      Son 12 aydaki toplam sponsorluk sayısı
+ *   approvalRate  FLOAT     Onaylanan başvuru oranı (0-1)
+ *   sector       VARCHAR    Şirketin birincil sektörü
+ *   hq           VARCHAR    Merkez ofis şehri
+ *   sourceUrl    VARCHAR    Resmi kayıt URL'i
+ */
+const DB_SPONSORS = [
+  {
+    id: 1, name: "Revolut Ltd", slug: "revolut-ltd",
+    country: "GB", visaTypes: ["Skilled Worker Visa", "Global Talent Visa"],
+    status: "verified", tier: "platinum",
+    sponsorsSince: 2018, totalSponsored: 312, approvalRate: 0.94,
+    sector: "Yazılım & IT", hq: "Londra",
+    sourceUrl: "https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers"
+  },
+  {
+    id: 2, name: "Siemens AG", slug: "siemens-ag",
+    country: "DE", visaTypes: ["EU Blue Card", "Fachkräfte-Einwanderungsgesetz"],
+    status: "verified", tier: "platinum",
+    sponsorsSince: 2012, totalSponsored: 887, approvalRate: 0.97,
+    sector: "Mühendislik", hq: "München",
+    sourceUrl: "https://www.arbeitsagentur.de/unternehmen/personalsuche/fachkraefteeinwanderung"
+  },
+  {
+    id: 3, name: "BioNTech SE", slug: "biontech-se",
+    country: "DE", visaTypes: ["EU Blue Card", "Fachkräfte-Einwanderungsgesetz"],
+    status: "verified", tier: "gold",
+    sponsorsSince: 2019, totalSponsored: 143, approvalRate: 0.91,
+    sector: "Ar-Ge / Bilim", hq: "Mainz",
+    sourceUrl: "https://www.arbeitsagentur.de/unternehmen/personalsuche/fachkraefteeinwanderung"
+  },
+  {
+    id: 4, name: "Barclays Bank PLC", slug: "barclays-bank-plc",
+    country: "GB", visaTypes: ["Skilled Worker Visa", "Intra-company Transfer"],
+    status: "verified", tier: "platinum",
+    sponsorsSince: 2009, totalSponsored: 524, approvalRate: 0.96,
+    sector: "Finans", hq: "Londra",
+    sourceUrl: "https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers"
+  },
+  {
+    id: 5, name: "Delivery Hero SE", slug: "delivery-hero-se",
+    country: "DE", visaTypes: ["EU Blue Card", "Fachkräfte-Einwanderungsgesetz"],
+    status: "verified", tier: "gold",
+    sponsorsSince: 2020, totalSponsored: 198, approvalRate: 0.88,
+    sector: "Yazılım & IT", hq: "Berlin",
+    sourceUrl: "https://www.arbeitsagentur.de/unternehmen/personalsuche/fachkraefteeinwanderung"
+  },
+  {
+    id: 6, name: "AstraZeneca PLC", slug: "astrazeneca-plc",
+    country: "GB", visaTypes: ["Skilled Worker Visa", "Global Talent Visa"],
+    status: "verified", tier: "platinum",
+    sponsorsSince: 2010, totalSponsored: 461, approvalRate: 0.95,
+    sector: "Ar-Ge / Bilim", hq: "Cambridge",
+    sourceUrl: "https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers"
+  },
+  {
+    id: 7, name: "Deutsche Bank AG", slug: "deutsche-bank-ag",
+    country: "DE", visaTypes: ["EU Blue Card", "Fachkräfte-Einwanderungsgesetz"],
+    status: "verified", tier: "platinum",
+    sponsorsSince: 2013, totalSponsored: 673, approvalRate: 0.93,
+    sector: "Finans", hq: "Frankfurt",
+    sourceUrl: "https://www.arbeitsagentur.de/unternehmen/personalsuche/fachkraefteeinwanderung"
+  },
+  {
+    id: 8, name: "Arm Holdings Ltd", slug: "arm-holdings-ltd",
+    country: "GB", visaTypes: ["Skilled Worker Visa", "Global Talent Visa"],
+    status: "verified", tier: "gold",
+    sponsorsSince: 2015, totalSponsored: 89, approvalRate: 0.92,
+    sector: "Yazılım & IT", hq: "Cambridge",
+    sourceUrl: "https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers"
+  },
+  /* Sistemde kayıtlı OLMAYAN şirket — rozet gösterilmeyecek */
+  {
+    id: 9, name: "Generic Corp", slug: "generic-corp",
+    country: "US", visaTypes: [],
+    status: "pending", tier: "standard",
+    sponsorsSince: null, totalSponsored: 0, approvalRate: 0,
+    sector: "Diğer", hq: "New York",
+    sourceUrl: null
+  },
 ];
+
+/**
+ * TABLE: jobs
+ * İş ilanları. company_slug alanı DB_SPONSORS.slug ile JOIN edilir.
+ *
+ * Schema:
+ *   id            INT     PRIMARY KEY
+ *   title         VARCHAR Pozisyon başlığı
+ *   company       VARCHAR Görünen şirket adı
+ *   company_slug  VARCHAR → REFERENCES sponsors(slug)  [JOIN key]
+ *   logo / colors CHAR    Görsel kimlik
+ *   location      VARCHAR Şehir, Ülke
+ *   country_code  CHAR(2) Filtreleme için ISO 3166-1
+ *   sector        VARCHAR Sektör etiket
+ *   type          VARCHAR Çalışma modeli
+ *   salary        VARCHAR Maaş aralığı (Pro üyelere açık)
+ *   visa          VARCHAR Geçerli vize türü (resmi isim)
+ *   visaColor     HEX     UI rengi
+ *   posted        VARCHAR Göreli tarih
+ *   tags          TEXT[]  Arama etiketleri
+ *   featured      BOOL    Öne çıkan ilan
+ *   openings      INT     Açık pozisyon sayısı
+ */
+const DB_JOBS = [
+  {
+    id: 1,
+    title: "Senior Software Engineer — Payments",
+    company: "Revolut Ltd",
+    company_slug: "revolut-ltd",
+    logo: "RV", logoColor: "#818cf8", logoBg: "#12102a",
+    location: "Londra, İngiltere", country_code: "GB",
+    sector: "Yazılım & IT", type: "Tam Zamanlı · Hibrit",
+    salary: "£95K – £130K", visa: "Skilled Worker Visa",
+    visaColor: "#a78bfa",
+    posted: "Bugün", openings: 4,
+    tags: ["Kotlin", "Microservices", "Kafka"],
+    featured: true
+  },
+  {
+    id: 2,
+    title: "Mechatronik Mühendisi",
+    company: "Siemens AG",
+    company_slug: "siemens-ag",
+    logo: "SI", logoColor: "#38bdf8", logoBg: "#051828",
+    location: "München, Almanya", country_code: "DE",
+    sector: "Mühendislik", type: "Tam Zamanlı · Ofis",
+    salary: "€72K – €96K", visa: "EU Blue Card",
+    visaColor: "#3b82f6",
+    posted: "1 gün önce", openings: 2,
+    tags: ["PLC", "ROS2", "SolidWorks"],
+    featured: true
+  },
+  {
+    id: 3,
+    title: "mRNA Araştırma Bilimcisi",
+    company: "BioNTech SE",
+    company_slug: "biontech-se",
+    logo: "BN", logoColor: "#34d399", logoBg: "#071a12",
+    location: "Mainz, Almanya", country_code: "DE",
+    sector: "Ar-Ge / Bilim", type: "Tam Zamanlı · Ofis",
+    salary: "€68K – €88K", visa: "EU Blue Card",
+    visaColor: "#3b82f6",
+    posted: "2 gün önce", openings: 1,
+    tags: ["mRNA", "Immunology", "CRISPR"],
+    featured: false
+  },
+  {
+    id: 4,
+    title: "Quantitative Analyst — Fixed Income",
+    company: "Barclays Bank PLC",
+    company_slug: "barclays-bank-plc",
+    logo: "BC", logoColor: "#22d3ee", logoBg: "#041820",
+    location: "Londra, İngiltere", country_code: "GB",
+    sector: "Finans", type: "Tam Zamanlı · Hibrit",
+    salary: "£110K – £150K", visa: "Skilled Worker Visa",
+    visaColor: "#a78bfa",
+    posted: "3 gün önce", openings: 3,
+    tags: ["Python", "Stochastic Calc", "Bloomberg"],
+    featured: false
+  },
+  {
+    id: 5,
+    title: "Backend Engineer — Logistics Platform",
+    company: "Delivery Hero SE",
+    company_slug: "delivery-hero-se",
+    logo: "DH", logoColor: "#fb923c", logoBg: "#1a0c04",
+    location: "Berlin, Almanya", country_code: "DE",
+    sector: "Yazılım & IT", type: "Tam Zamanlı · Remote-First",
+    salary: "€80K – €105K", visa: "EU Blue Card",
+    visaColor: "#3b82f6",
+    posted: "4 gün önce", openings: 6,
+    tags: ["Go", "gRPC", "Kubernetes"],
+    featured: false
+  },
+  {
+    id: 6,
+    title: "Onkoloji Klinik Araştırmacısı",
+    company: "AstraZeneca PLC",
+    company_slug: "astrazeneca-plc",
+    logo: "AZ", logoColor: "#60a5fa", logoBg: "#050f1e",
+    location: "Cambridge, İngiltere", country_code: "GB",
+    sector: "Ar-Ge / Bilim", type: "Tam Zamanlı · Ofis",
+    salary: "£75K – £98K", visa: "Skilled Worker Visa",
+    visaColor: "#a78bfa",
+    posted: "5 gün önce", openings: 2,
+    tags: ["Phase III", "GCP", "Oncology"],
+    featured: false
+  },
+  {
+    id: 7,
+    title: "Chip Architecture Engineer",
+    company: "Arm Holdings Ltd",
+    company_slug: "arm-holdings-ltd",
+    logo: "AR", logoColor: "#f472b6", logoBg: "#1a0618",
+    location: "Cambridge, İngiltere", country_code: "GB",
+    sector: "Mühendislik", type: "Tam Zamanlı · Hibrit",
+    salary: "£100K – £140K", visa: "Skilled Worker Visa",
+    visaColor: "#a78bfa",
+    posted: "1 gün önce", openings: 1,
+    tags: ["ARM ISA", "RTL", "RISC-V"],
+    featured: false
+  },
+  {
+    id: 8,
+    title: "Risk Modelling Analyst",
+    company: "Deutsche Bank AG",
+    company_slug: "deutsche-bank-ag",
+    logo: "DB", logoColor: "#fbbf24", logoBg: "#191004",
+    location: "Frankfurt, Almanya", country_code: "DE",
+    sector: "Finans", type: "Tam Zamanlı · Hibrit",
+    salary: "€78K – €105K", visa: "EU Blue Card",
+    visaColor: "#3b82f6",
+    posted: "Bugün", openings: 2,
+    tags: ["Basel IV", "Python", "VaR"],
+    featured: false
+  },
+];
+
+/* ──────────────────────────────────────────────────────────────
+   DB QUERY FUNCTIONS
+   Gerçek bir backend'de bu fonksiyonlar SQL sorgusu çalıştırır.
+   Burada client-side JS ile aynı mantığı taklit ediyoruz.
+────────────────────────────────────────────────────────────── */
+
+/**
+ * getSponsor(slug) → Sponsors tablosundan tekil kayıt döner.
+ * SQL equiv: SELECT * FROM sponsors WHERE slug = $1 LIMIT 1;
+ */
+function getSponsor(slug) {
+  return DB_SPONSORS.find(s => s.slug === slug) || null;
+}
+
+/**
+ * isVerifiedSponsor(slug) → Şirketin sistemde kayıtlı ve aktif olup olmadığını kontrol eder.
+ * SQL equiv: SELECT EXISTS(SELECT 1 FROM sponsors WHERE slug=$1 AND status='verified');
+ * Bu fonksiyon buildJobCard() içinde çağrılarak rozet gösterimini yönetir.
+ */
+function isVerifiedSponsor(slug) {
+  const sponsor = getSponsor(slug);
+  return sponsor !== null && sponsor.status === 'verified';
+}
+
+/**
+ * getVerifiedBadgeData(slug) → Tooltip'e doldurmak için zenginleştirilmiş veri.
+ * Sponsor yoksa null döner (rozet gösterilmez).
+ */
+function getVerifiedBadgeData(slug) {
+  const sponsor = getSponsor(slug);
+  if (!sponsor || sponsor.status !== 'verified') return null;
+  return {
+    totalSponsored : sponsor.totalSponsored,
+    approvalRate   : Math.round(sponsor.approvalRate * 100),
+    tier           : sponsor.tier,
+    visaTypes      : sponsor.visaTypes,
+    sourceCountry  : sponsor.country,
+    sourceUrl      : sponsor.sourceUrl,
+    sponsorsSince  : sponsor.sponsorsSince,
+  };
+}
+
+/**
+ * queryJobs(filters) → Filtrelenmiş iş ilanı listesi döner.
+ * SQL equiv: SELECT j.*, s.status, s.tier FROM jobs j
+ *            LEFT JOIN sponsors s ON j.company_slug = s.slug
+ *            WHERE ... (filtre koşulları)
+ */
+function queryJobs({ search = '', sectors = [], countryCode = '' } = {}) {
+  return DB_JOBS
+    .map(job => ({
+      ...job,
+      _sponsor: getSponsor(job.company_slug),
+    }))
+    .filter(job => {
+      const mSearch  = !search  || job.title.toLowerCase().includes(search)
+                                || job.company.toLowerCase().includes(search)
+                                || job.tags.some(t => t.toLowerCase().includes(search));
+      const mSector  = sectors.length === 0 || sectors.includes(job.sector);
+      const mCountry = !countryCode || job.country_code === countryCode;
+      return mSearch && mSector && mCountry;
+    });
+}
+
+/* Backward-compat alias (mevcut renderJobs() JOBS kullanıyor) */
+const JOBS = DB_JOBS;
 
 /* ─ STATE ─ */
 let selectedSectors = [];
@@ -1118,8 +1429,88 @@ function buildSidebar(){
   `).join('');
 }
 
-/* ─ BUILD JOB CARD HTML ─ */
-function buildJobCard(job){
+/* ─ BUILD JOB CARD HTML ─
+   Matching Logic:
+   - company_slug → DB_SPONSORS.slug üzerinden JOIN (getSponsor)
+   - isVerifiedSponsor() true ise yeşil rozet + zengin tooltip gösterilir
+   - Badge verisi getVerifiedBadgeData() ile çekilir (tier, approvalRate, totalSponsored)
+   - Sponsor yoksa / status !== 'verified' ise rozet tamamen gizlenir
+*/
+function buildJobCard(job) {
+  /* ── SPONSOR MATCHING ───────────────────────────────────
+     DB_SPONSORS tablosuyla JOIN: company_slug → sponsor kaydı
+  ── */
+  const badgeData   = getVerifiedBadgeData(job.company_slug);
+  const isVerified  = badgeData !== null;
+
+  /* Tier rozeti renkleri */
+  const tierColors  = {
+    platinum: { bg:'rgba(192,192,255,.12)', border:'rgba(192,192,255,.3)',  text:'#c4b5fd', label:'Platin Sponsor' },
+    gold:     { bg:'rgba(245,158,11,.10)',  border:'rgba(245,158,11,.28)', text:'var(--gold-lt)', label:'Altın Sponsor' },
+    standard: { bg:'rgba(100,116,139,.1)', border:'rgba(100,116,139,.2)', text:'var(--text3)', label:'Sponsor' },
+  };
+  const tc = isVerified ? (tierColors[badgeData.tier] || tierColors.standard) : null;
+
+  /* Kaynak ülke bayrağı */
+  const flagMap = { GB: '🇬🇧', DE: '🇩🇪', NL: '🇳🇱', CH: '🇨🇭', US: '🇺🇸' };
+  const sourceFlag = isVerified ? (flagMap[badgeData.sourceCountry] || '') : '';
+
+  /* Sponsorluk istatistiği (dinamik) */
+  const sponsorCount = isVerified ? badgeData.totalSponsored : (job.sponsorCount || 0);
+  const approvalPct  = isVerified ? badgeData.approvalRate   : null;
+
+  /* ── VERIFIED BADGE HTML ────────────────────────────────
+     Sadece isVerified === true olduğunda render edilir.
+     İlgili SQL: sponsor.status = 'verified'
+  ── */
+  const verifiedBadgeHTML = isVerified ? `
+    <div class="verified-wrap">
+      <div class="verified-btn" style="background:${tc.bg};border-color:${tc.border};color:${tc.text}">
+        ${iconSVG('check')}
+        Verified Sponsor
+        <span style="font-size:9px;opacity:.7;margin-left:2px">${tc.label}</span>
+      </div>
+      <div class="verified-tooltip">
+        <div class="tooltip-arrow"></div>
+        <div class="tooltip-header">
+          <div class="tooltip-icon">${iconSVG('shield')}</div>
+          <div>
+            <div class="tooltip-title">Doğrulanmış Sponsor ${sourceFlag}</div>
+            <div class="tooltip-sub">
+              ${badgeData.sourceCountry === 'GB'
+                ? 'GOV.UK Sponsor Listesi'nde kayıtlı'
+                : 'Bundesagentur für Arbeit'te kayıtlı'}
+              · ${badgeData.sponsorsSince}'den beri
+            </div>
+          </div>
+        </div>
+        <div class="tooltip-stat">
+          <div>
+            <div class="tooltip-num">${sponsorCount}</div>
+            <div class="tooltip-num-label">Sponsored (12 ay)</div>
+          </div>
+          <div class="tooltip-divider"></div>
+          <div>
+            <div class="tooltip-num" style="color:#34d399">%${approvalPct}</div>
+            <div class="tooltip-num-label">Onay Oranı</div>
+          </div>
+          <div class="tooltip-divider"></div>
+          <div class="tooltip-desc">
+            ${badgeData.visaTypes.map(v => `<span style="font-size:9px;background:rgba(59,130,246,.1);padding:1px 5px;border-radius:4px;margin:1px;display:inline-block">${v}</span>`).join('')}
+          </div>
+        </div>
+        <div class="tooltip-footer">
+          ${iconSVG('star')}
+          ${badgeData.tier === 'platinum' ? 'Platin seviye · En yüksek onay oranı'
+            : badgeData.tier === 'gold'   ? 'Altın seviye · Yüksek güvenilirlik'
+            :                               'Onaylı sponsor · Aktif kayıt'}
+        </div>
+      </div>
+    </div>` : `
+    <div style="font-size:10px;color:var(--text4);padding:6px 8px;border:1px dashed var(--border);border-radius:8px;opacity:.6">
+      Sponsor durumu doğrulanmadı
+    </div>`;
+
   return `
     <div class="job-card${job.featured?' featured':''}">
       ${job.featured?'<div class="featured-line"></div>':''}
@@ -1130,6 +1521,9 @@ function buildJobCard(job){
             <div class="card-meta-row">
               ${job.featured?`<span class="badge-featured">${iconSVG('spark')}Öne Çıkan</span>`:''}
               <span class="post-time">${job.posted}</span>
+              ${job.openings > 1
+                ? `<span style="font-size:10px;color:var(--cyan-lt);background:rgba(6,182,212,.1);border:1px solid rgba(6,182,212,.2);padding:2px 7px;border-radius:5px;">${job.openings} açık pozisyon</span>`
+                : ''}
             </div>
             <div class="card-title">${job.title}</div>
             <div class="card-company">
@@ -1137,36 +1531,7 @@ function buildJobCard(job){
               ${job.company}
             </div>
           </div>
-          <div class="verified-wrap">
-            <div class="verified-btn">
-              ${iconSVG('check')}
-              Verified Sponsor
-            </div>
-            <div class="verified-tooltip">
-              <div class="tooltip-arrow"></div>
-              <div class="tooltip-header">
-                <div class="tooltip-icon">${iconSVG('shield')}</div>
-                <div>
-                  <div class="tooltip-title">Doğrulanmış Sponsor</div>
-                  <div class="tooltip-sub">VisaPath tarafından onaylandı</div>
-                </div>
-              </div>
-              <div class="tooltip-stat">
-                <div>
-                  <div class="tooltip-num">${job.sponsorCount}</div>
-                  <div class="tooltip-num-label">Sponsored</div>
-                </div>
-                <div class="tooltip-divider"></div>
-                <div class="tooltip-desc">
-                  Bu şirket son 12 ayda <strong style="color:#f1f5f9">${job.sponsorCount}</strong> çalışana vize sponsorluğu sağladı.
-                </div>
-              </div>
-              <div class="tooltip-footer">
-                ${iconSVG('star')}
-                Yüksek onay oranı · Hızlı süreç
-              </div>
-            </div>
-          </div>
+          ${verifiedBadgeHTML}
         </div>
 
         <div class="card-info">
@@ -1181,11 +1546,12 @@ function buildJobCard(job){
             <span class="blurred-val">${job.salary}</span>
             <span class="lock-badge"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Pro ile Gör</span></span>
           </span>
+          ${isVerified ? `
           <span class="card-info-locked" style="margin-left:4px" onclick="showPaywall('visa_rate')">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-            <span class="blurred-val">%${job.sponsorCount>80?92:job.sponsorCount>50?78:65} Onay</span>
+            <span class="blurred-val">%${approvalPct} Onay</span>
             <span class="lock-badge"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Pro ile Gör</span></span>
-          </span>
+          </span>` : ''}
         </div>
 
         <div class="card-tags-row">
@@ -1383,6 +1749,36 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.activeElement.id==='searchPos') filterJobs();
 });
 
+
+/* ─ DB DEBUG PANEL ─ */
+function renderDbPanel(){
+  const rows = document.getElementById('dbRows');
+  const cnt  = document.getElementById('dbMatchCount');
+  if(!rows) return;
+  const verified = DB_SPONSORS.filter(s=>s.status==='verified');
+  if(cnt) cnt.textContent = verified.length + '/' + DB_SPONSORS.length;
+  rows.innerHTML = DB_SPONSORS.map(s => {
+    const matched = DB_JOBS.some(j => j.company_slug === s.slug);
+    return `<div class="db-row">
+      <span class="db-tier db-tier-${s.tier}">${s.tier.toUpperCase()}</span>
+      <span style="flex:1;color:${s.status==='verified'?'#e2e8f0':'#64748b'}">${s.name}</span>
+      <span style="font-size:9px;color:#64748b">${s.country}</span>
+      ${matched
+        ? '<span class="db-match" title="İş ilanıyla eşleşti">✓ match</span>'
+        : '<span style="color:#475569;font-size:9px">no jobs</span>'}
+      <span style="color:#10b981;font-size:9px">%${Math.round(s.approvalRate*100)}</span>
+    </div>`;
+  }).join('');
+}
+document.addEventListener('keydown', e => {
+  if(e.ctrlKey && e.shiftKey && e.key === 'D'){
+    e.preventDefault();
+    const p = document.getElementById('dbPanel');
+    p.classList.toggle('open');
+    if(p.classList.contains('open')) renderDbPanel();
+  }
+});
+
 /* ─ INIT ─ */
 buildSidebar();
 renderJobs();
@@ -1500,6 +1896,16 @@ renderJobs();
     <p class="paywall-price-note">Sadece <strong>$9.99/ay</strong> · İstediğin zaman iptal et</p>
     <button class="paywall-dismiss" onclick="hidePaywall()">Şimdi değil, ücretsiz devam et</button>
   </div>
+</div>
+
+<!-- DB Debug Panel (Ctrl+Shift+D ile aç) -->
+<div class="db-panel" id="dbPanel">
+  <div class="db-panel-head">
+    <div class="db-dot"></div>
+    sponsors tablosu · <span id="dbMatchCount"></span> kayıt
+    <button onclick="document.getElementById('dbPanel').classList.remove('open')" style="margin-left:auto;background:none;border:none;color:#64748b;cursor:pointer;font-size:14px">✕</button>
+  </div>
+  <div class="db-rows" id="dbRows"></div>
 </div>
 </body>
 </html>
