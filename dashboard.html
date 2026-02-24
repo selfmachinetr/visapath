@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>VisaPath — Kontrol Paneli</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ══════════════════════════════════════════
+   RESET & BASE
+══════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:#060d18;
+  color:#e2e8f0;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+a{text-decoration:none;color:inherit}
+button{font-family:'DM Sans',sans-serif;cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:'DM Sans',sans-serif}
+::-webkit-scrollbar{width:4px;height:4px;background:transparent}
+::-webkit-scrollbar-thumb{background:#1e3a5f;border-radius:4px}
+::selection{background:rgba(59,130,246,.3);color:#fff}
+
+/* ══════════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════════ */
+:root{
+  --bg0:#060d18;
+  --bg1:#0b1727;
+  --bg2:#0d1e35;
+  --bg3:#0a1525;
+  --border:#162035;
+  --border2:#1e3a5f;
+  --blue:#3b82f6;
+  --blue2:#2563eb;
+  --blue-lt:#60a5fa;
+  --cyan:#06b6d4;
+  --cyan-lt:#67e8f9;
+  --green:#10b981;
+  --green-lt:#34d399;
+  --amber:#f59e0b;
+  --orange:#f97316;
+  --red:#ef4444;
+  --purple:#8b5cf6;
+  --text:#f1f5f9;
+  --text2:#94a3b8;
+  --text3:#64748b;
+  --text4:#3d5068;
+  --mono:'JetBrains Mono',monospace;
+  --syne:'Syne',sans-serif;
+}
+
+/* ══════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes progressFill{from{width:0}to{width:var(--w)}}
+@keyframes countUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes borderFlow{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+@keyframes statusBlink{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{box-shadow:0 0 0 5px rgba(16,185,129,.0)}}
+
+.anim-1{animation:fadeUp .45s .05s ease both}
+.anim-2{animation:fadeUp .45s .12s ease both}
+.anim-3{animation:fadeUp .45s .19s ease both}
+.anim-4{animation:fadeUp .45s .26s ease both}
+.anim-5{animation:fadeUp .45s .33s ease both}
+.anim-6{animation:fadeUp .45s .40s ease both}
+
+/* ══════════════════════════════════════════
+   LAYOUT SHELL
+══════════════════════════════════════════ */
+
+/* Top nav */
+.topnav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:58px;
+  background:rgba(6,13,24,.95);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 20px;
+  gap:16px;
+}
+.nav-logo{display:flex;align-items:center;gap:9px}
+.logo-dot{
+  width:28px;height:28px;border-radius:8px;
+  background:var(--blue);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 16px rgba(59,130,246,.5);
+}
+.logo-dot svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.logo-name{font-family:var(--syne);font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.5px}
+.logo-name span{color:var(--blue-lt)}
+.nav-sep{width:1px;height:28px;background:var(--border2);margin:0 4px}
+.nav-crumb{font-size:13px;color:var(--text3);font-weight:500}
+.nav-crumb span{color:var(--text2);margin-left:6px}
+
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+.nav-btn{
+  display:flex;align-items:center;gap:7px;
+  padding:7px 14px;border-radius:10px;
+  font-size:13px;font-weight:500;
+  color:var(--text2);
+  transition:all .18s;
+}
+.nav-btn:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.nav-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.nav-notif{
+  position:relative;
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg1);border:1px solid var(--border);
+  color:var(--text2);
+  transition:all .18s;
+}
+.nav-notif:hover{border-color:var(--border2);color:var(--text)}
+.nav-notif svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.notif-pip{
+  position:absolute;top:5px;right:5px;
+  width:7px;height:7px;border-radius:50%;
+  background:var(--orange);
+  border:1.5px solid var(--bg0);
+  animation:statusBlink 2s ease-in-out infinite;
+}
+.avatar{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(135deg,#1e4a7f,#2563eb);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;
+  border:1px solid rgba(59,130,246,.3);
+  cursor:pointer;
+}
+
+/* Sidebar */
+.sidebar{
+  position:fixed;top:58px;left:0;bottom:0;
+  width:220px;z-index:100;
+  background:var(--bg0);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  padding:16px 12px;
+  overflow-y:auto;
+}
+.sb-section-label{
+  font-size:9px;font-weight:700;
+  color:var(--text4);
+  text-transform:uppercase;letter-spacing:.12em;
+  padding:0 8px;margin:16px 0 6px;
+}
+.sb-section-label:first-child{margin-top:0}
+.sb-link{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 10px;border-radius:11px;
+  font-size:13px;font-weight:500;
+  color:var(--text3);
+  transition:all .18s;
+  position:relative;
+  cursor:pointer;
+}
+.sb-link svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.sb-link:hover{background:rgba(255,255,255,.04);color:var(--text2)}
+.sb-link.active{
+  background:rgba(59,130,246,.12);
+  color:var(--blue-lt);
+  border:1px solid rgba(59,130,246,.2);
+}
+.sb-link.active svg{stroke:var(--blue-lt)}
+.sb-badge{
+  margin-left:auto;
+  min-width:18px;height:18px;padding:0 5px;border-radius:5px;
+  background:var(--orange);color:#fff;
+  font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.sb-badge.blue{background:rgba(59,130,246,.25);color:var(--blue-lt)}
+.sb-badge.green{background:rgba(16,185,129,.2);color:var(--green-lt)}
+
+.sb-user{
+  margin-top:auto;
+  padding:12px 10px;border-radius:12px;
+  background:var(--bg1);border:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.sb-user-ava{
+  width:32px;height:32px;border-radius:9px;flex-shrink:0;
+  background:linear-gradient(135deg,#1e4a7f,#2563eb);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;
+}
+.sb-user-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.2}
+.sb-user-role{font-size:10px;color:var(--text3)}
+
+/* Main content area */
+.main{
+  margin-left:220px;
+  padding-top:58px;
+  min-height:100vh;
+}
+.page{
+  padding:28px 28px 80px;
+  display:none;
+}
+.page.active{
+  display:block;
+  animation:fadeIn .3s ease;
+}
+
+/* ══════════════════════════════════════════
+   PAGE HEADER
+══════════════════════════════════════════ */
+.page-header{margin-bottom:28px}
+.page-title{
+  font-family:var(--syne);
+  font-size:22px;font-weight:800;
+  color:var(--text);letter-spacing:-.4px;
+  margin-bottom:4px;
+}
+.page-sub{font-size:13px;color:var(--text3)}
+.page-sub strong{color:var(--text2);font-weight:500}
+
+/* ══════════════════════════════════════════
+   STAT CARDS (top row)
+══════════════════════════════════════════ */
+.stats-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+  margin-bottom:24px;
+}
+.stat-card{
+  background:var(--bg1);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:18px 20px;
+  position:relative;overflow:hidden;
+  transition:border-color .2s,transform .2s;
+}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.stat-card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--card-accent,var(--blue));
+  opacity:.7;
+}
+.stat-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:14px;
+}
+.stat-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.stat-val{
+  font-family:var(--syne);
+  font-size:28px;font-weight:800;
+  color:var(--text);letter-spacing:-.5px;
+  line-height:1;margin-bottom:4px;
+}
+.stat-label{font-size:12px;color:var(--text3);font-weight:500}
+.stat-delta{
+  position:absolute;top:18px;right:18px;
+  font-size:11px;font-weight:600;
+  padding:3px 8px;border-radius:6px;
+}
+.delta-up{color:var(--green-lt);background:rgba(16,185,129,.12)}
+.delta-down{color:#f87171;background:rgba(239,68,68,.12)}
+
+/* ══════════════════════════════════════════
+   APPLICATIONS TABLE
+══════════════════════════════════════════ */
+.section-card{
+  background:var(--bg1);
+  border:1px solid var(--border);
+  border-radius:18px;
+  overflow:hidden;
+  margin-bottom:20px;
+}
+.section-head{
+  padding:18px 22px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  flex-wrap:wrap;gap:10px;
+}
+.section-head-title{
+  font-family:var(--syne);
+  font-size:15px;font-weight:700;
+  color:var(--text);
+}
+.section-head-sub{font-size:12px;color:var(--text3);margin-left:2px}
+.head-actions{margin-left:auto;display:flex;align-items:center;gap:8px}
+.btn-sm{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:9px;
+  font-size:12px;font-weight:600;
+  transition:all .18s;
+}
+.btn-sm svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.btn-outline{
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--text2);
+}
+.btn-outline:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.btn-blue{
+  background:var(--blue);color:#fff;
+  border:1px solid transparent;
+  box-shadow:0 2px 12px rgba(59,130,246,.3);
+}
+.btn-blue:hover{background:var(--blue2);box-shadow:0 4px 18px rgba(59,130,246,.45)}
+
+/* Filter tabs */
+.filter-tabs{
+  display:flex;gap:4px;
+  padding:12px 22px;
+  border-bottom:1px solid var(--border);
+  overflow-x:auto;
+}
+.filter-tab{
+  padding:6px 14px;border-radius:8px;
+  font-size:12px;font-weight:600;
+  color:var(--text3);
+  white-space:nowrap;
+  transition:all .18s;
+}
+.filter-tab:hover{color:var(--text2)}
+.filter-tab.active{
+  background:rgba(59,130,246,.15);
+  border:1px solid rgba(59,130,246,.3);
+  color:var(--blue-lt);
+}
+.filter-tab .tab-count{
+  display:inline-block;
+  margin-left:5px;font-size:10px;
+  background:rgba(255,255,255,.08);
+  padding:1px 5px;border-radius:4px;
+  color:var(--text3);
+}
+.filter-tab.active .tab-count{
+  background:rgba(59,130,246,.2);
+  color:var(--blue-lt);
+}
+
+/* Application row */
+.app-row{
+  display:grid;
+  grid-template-columns:2fr 1.4fr 1fr 140px 100px;
+  align-items:center;
+  gap:16px;
+  padding:16px 22px;
+  border-bottom:1px solid var(--border);
+  transition:background .18s;
+  cursor:pointer;
+}
+.app-row:last-child{border-bottom:none}
+.app-row:hover{background:rgba(255,255,255,.025)}
+.app-row-header{
+  display:grid;
+  grid-template-columns:2fr 1.4fr 1fr 140px 100px;
+  gap:16px;
+  padding:10px 22px;
+  border-bottom:1px solid var(--border);
+}
+.col-label{font-size:10px;font-weight:700;color:var(--text4);text-transform:uppercase;letter-spacing:.08em}
+
+.app-company{display:flex;align-items:center;gap:12px}
+.company-ava{
+  width:38px;height:38px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:900;
+  border:1px solid rgba(255,255,255,.06);
+  flex-shrink:0;
+}
+.company-info-name{font-size:14px;font-weight:600;color:var(--text);line-height:1.3}
+.company-info-title{font-size:12px;color:var(--text3);margin-top:1px}
+
+.app-location{
+  display:flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--text2);
+}
+.app-location svg{width:12px;height:12px;stroke:var(--blue-lt);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+.app-date{
+  font-family:var(--mono);
+  font-size:11px;color:var(--text3);
+}
+
+/* Status badges */
+.status-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 10px;border-radius:8px;
+  font-size:11px;font-weight:700;
+  white-space:nowrap;
+}
+.status-badge::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:currentColor;flex-shrink:0;
+}
+.s-applied   {color:#94a3b8;background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.15)}
+.s-review    {color:var(--amber);background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2)}
+.s-interview {color:var(--cyan-lt);background:rgba(103,232,249,.1);border:1px solid rgba(103,232,249,.2)}
+.s-offer     {color:var(--green-lt);background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.25)}
+.s-rejected  {color:#f87171;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.15)}
+.s-visa      {color:var(--purple);background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.25);animation:statusBlink 2.5s ease-in-out infinite}
+
+/* Row actions */
+.row-actions{display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.row-btn{
+  width:28px;height:28px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;
+  border:1px solid var(--border);
+  color:var(--text3);
+  transition:all .18s;
+}
+.row-btn:hover{background:rgba(255,255,255,.06);color:var(--text);border-color:var(--border2)}
+.row-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ══════════════════════════════════════════
+   VISA TRACKER
+══════════════════════════════════════════ */
+.visa-grid{
+  display:grid;
+  grid-template-columns:1fr 340px;
+  gap:20px;
+  margin-bottom:20px;
+}
+
+/* Visa process stepper */
+.visa-stepper{padding:24px}
+.visa-stepper-title{
+  font-family:var(--syne);font-size:16px;font-weight:700;
+  color:var(--text);margin-bottom:6px;
+}
+.visa-stepper-meta{font-size:12px;color:var(--text3);margin-bottom:28px}
+.visa-stepper-meta strong{color:var(--blue-lt)}
+
+.steps{display:flex;flex-direction:column;gap:0}
+.step{
+  display:flex;gap:16px;
+  position:relative;
+}
+.step-left{
+  display:flex;flex-direction:column;align-items:center;
+  flex-shrink:0;
+}
+.step-dot{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--border2);
+  background:var(--bg0);
+  position:relative;z-index:1;
+  transition:all .3s;
+  flex-shrink:0;
+}
+.step-dot svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.step-line{
+  width:2px;flex:1;min-height:24px;
+  background:var(--border);
+  margin:4px 0;
+}
+.step.done .step-dot{
+  background:rgba(16,185,129,.2);
+  border-color:var(--green);
+  color:var(--green-lt);
+  box-shadow:0 0 12px rgba(16,185,129,.25);
+}
+.step.done .step-line{background:linear-gradient(to bottom,var(--green),var(--border))}
+.step.current .step-dot{
+  background:rgba(59,130,246,.2);
+  border-color:var(--blue);
+  color:var(--blue-lt);
+  box-shadow:0 0 16px rgba(59,130,246,.35);
+  animation:statusBlink 2s ease-in-out infinite;
+}
+.step.current .step-line{background:var(--border)}
+.step.pending .step-dot{border-color:var(--border2);color:var(--text4)}
+
+.step-body{padding:0 0 28px 0}
+.step-name{
+  font-size:14px;font-weight:600;color:var(--text);
+  margin-bottom:3px;line-height:1.3;
+}
+.step.pending .step-name{color:var(--text3)}
+.step-desc{font-size:12px;color:var(--text3);line-height:1.6;margin-bottom:8px}
+.step-date{
+  font-family:var(--mono);font-size:10px;
+  color:var(--text4);
+}
+.step.done .step-date{color:var(--green-lt)}
+.step.current .step-date{color:var(--blue-lt)}
+
+.step-docs{
+  display:flex;flex-direction:column;gap:6px;
+  margin-top:10px;
+}
+.step-doc{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:9px;
+  background:var(--bg0);border:1px solid var(--border);
+  font-size:12px;color:var(--text2);
+  transition:border-color .18s;
+}
+.step-doc:hover{border-color:var(--border2)}
+.step-doc svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.doc-status{
+  margin-left:auto;
+  font-size:10px;font-weight:700;
+  padding:2px 7px;border-radius:5px;
+}
+.doc-ok{color:var(--green-lt);background:rgba(16,185,129,.12)}
+.doc-missing{color:var(--orange);background:rgba(249,115,22,.12)}
+.doc-review{color:var(--amber);background:rgba(245,158,11,.12)}
+
+/* Progress bar */
+.visa-progress{
+  padding:20px;
+  background:var(--bg0);
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin-bottom:16px;
+}
+.progress-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;
+}
+.progress-label{font-size:12px;font-weight:600;color:var(--text2)}
+.progress-pct{
+  font-family:var(--mono);font-size:13px;
+  font-weight:500;color:var(--blue-lt);
+}
+.progress-track{
+  height:6px;background:var(--border);
+  border-radius:3px;overflow:hidden;
+}
+.progress-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--blue),var(--cyan));
+  transition:width .8s cubic-bezier(.4,0,.2,1);
+}
+
+/* Sidebar cards */
+.info-card{
+  background:var(--bg1);border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;
+  margin-bottom:16px;
+}
+.info-card-head{
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  font-size:13px;font-weight:700;color:var(--text);
+}
+.info-card-body{padding:16px 18px}
+.info-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 0;border-bottom:1px solid var(--border);
+  font-size:12px;
+}
+.info-row:last-child{border-bottom:none;padding-bottom:0}
+.info-key{color:var(--text3)}
+.info-val{color:var(--text);font-weight:500;text-align:right}
+.info-val.mono{font-family:var(--mono);font-size:11px}
+
+/* Deadline item */
+.deadline-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 0;border-bottom:1px solid var(--border);
+}
+.deadline-item:last-child{border-bottom:none;padding-bottom:0}
+.deadline-dot{
+  width:8px;height:8px;border-radius:50%;
+  flex-shrink:0;
+}
+.deadline-info{flex:1;min-width:0}
+.deadline-name{font-size:12px;font-weight:500;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.deadline-date{font-family:var(--mono);font-size:10px;color:var(--text4);margin-top:2px}
+.deadline-days{
+  flex-shrink:0;
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:3px 8px;border-radius:6px;
+}
+.days-urgent{color:var(--orange);background:rgba(249,115,22,.12)}
+.days-ok{color:var(--green-lt);background:rgba(16,185,129,.1)}
+.days-soon{color:var(--amber);background:rgba(245,158,11,.1)}
+
+/* ══════════════════════════════════════════
+   COMPANIES RESPONSE PANEL
+══════════════════════════════════════════ */
+.response-list{padding:0}
+.response-item{
+  display:flex;align-items:center;gap:16px;
+  padding:16px 22px;
+  border-bottom:1px solid var(--border);
+  transition:background .18s;
+  cursor:pointer;
+}
+.response-item:last-child{border-bottom:none}
+.response-item:hover{background:rgba(255,255,255,.025)}
+.resp-logo{
+  width:42px;height:42px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;
+  border:1px solid rgba(255,255,255,.06);
+  flex-shrink:0;
+}
+.resp-body{flex:1;min-width:0}
+.resp-name{font-size:14px;font-weight:600;color:var(--text)}
+.resp-msg{font-size:12px;color:var(--text3);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:380px}
+.resp-time{font-family:var(--mono);font-size:10px;color:var(--text4);margin-top:4px}
+.resp-right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.resp-badge{
+  font-size:10px;font-weight:700;
+  padding:3px 9px;border-radius:6px;
+}
+.rb-positive{color:var(--green-lt);background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.2)}
+.rb-interview{color:var(--cyan-lt);background:rgba(103,232,249,.1);border:1px solid rgba(103,232,249,.2)}
+.rb-waiting{color:var(--amber);background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.15)}
+.rb-rejected{color:#f87171;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.15)}
+.resp-unread{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--blue);
+}
+
+/* ══════════════════════════════════════════
+   TIMELINE
+══════════════════════════════════════════ */
+.timeline{padding:20px 22px}
+.tl-item{
+  display:flex;gap:14px;
+  padding-bottom:20px;
+  position:relative;
+}
+.tl-item::before{
+  content:'';
+  position:absolute;left:15px;top:28px;bottom:0;
+  width:1px;background:var(--border);
+}
+.tl-item:last-child::before{display:none}
+.tl-icon{
+  width:30px;height:30px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;position:relative;z-index:1;
+  border:1px solid var(--border);
+}
+.tl-icon svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tl-body{flex:1;padding-top:4px}
+.tl-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.tl-sub{font-size:12px;color:var(--text3)}
+.tl-time{font-family:var(--mono);font-size:10px;color:var(--text4);margin-top:4px}
+
+/* ══════════════════════════════════════════
+   OVERVIEW GRID
+══════════════════════════════════════════ */
+.overview-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+.overview-grid .section-card{margin-bottom:0}
+
+/* Activity heatmap strip */
+.activity-strip{
+  display:flex;gap:3px;padding:0 22px 20px;
+  overflow-x:auto;
+}
+.activity-col{display:flex;flex-direction:column;gap:3px}
+.activity-cell{
+  width:12px;height:12px;border-radius:3px;
+  background:var(--bg0);border:1px solid var(--border);
+  transition:all .2s;
+  cursor:default;
+}
+.activity-cell:hover{transform:scale(1.3)}
+.ac-1{background:rgba(59,130,246,.2);border-color:rgba(59,130,246,.3)}
+.ac-2{background:rgba(59,130,246,.4);border-color:rgba(59,130,246,.5)}
+.ac-3{background:rgba(59,130,246,.6);border-color:rgba(59,130,246,.7)}
+.ac-4{background:rgba(59,130,246,.85);border-color:rgba(59,130,246,1)}
+
+/* ══════════════════════════════════════════
+   DETAIL DRAWER
+══════════════════════════════════════════ */
+.drawer-overlay{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(4px);
+  opacity:0;pointer-events:none;
+  transition:opacity .25s;
+}
+.drawer-overlay.open{opacity:1;pointer-events:all}
+.drawer{
+  position:fixed;top:0;right:0;bottom:0;z-index:301;
+  width:480px;max-width:95vw;
+  background:var(--bg1);
+  border-left:1px solid var(--border2);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  box-shadow:-20px 0 60px rgba(0,0,0,.5);
+}
+.drawer.open{transform:translateX(0)}
+.drawer-head{
+  padding:20px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:14px;
+}
+.drawer-close{
+  margin-left:auto;width:32px;height:32px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg0);border:1px solid var(--border);
+  color:var(--text3);transition:all .18s;
+}
+.drawer-close:hover{color:var(--text);border-color:var(--border2)}
+.drawer-close svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.drawer-body{flex:1;overflow-y:auto;padding:24px}
+.drawer-section{margin-bottom:24px}
+.drawer-section-title{
+  font-size:10px;font-weight:700;color:var(--text4);
+  text-transform:uppercase;letter-spacing:.1em;
+  margin-bottom:12px;
+}
+.drawer-field{
+  background:var(--bg0);border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;
+  margin-bottom:8px;
+}
+.drawer-field-label{font-size:10px;color:var(--text4);margin-bottom:4px;text-transform:uppercase;letter-spacing:.06em}
+.drawer-field-val{font-size:13px;color:var(--text);font-weight:500}
+.drawer-field-val.mono{font-family:var(--mono);font-size:12px}
+
+.note-box{
+  width:100%;background:var(--bg0);
+  border:1px solid var(--border);
+  border-radius:10px;padding:12px 14px;
+  color:var(--text);font-size:13px;
+  resize:vertical;min-height:90px;outline:none;
+  transition:border-color .18s;
+  font-family:'DM Sans',sans-serif;
+  line-height:1.6;
+}
+.note-box:focus{border-color:var(--border2)}
+.drawer-foot{
+  padding:16px 24px;
+  border-top:1px solid var(--border);
+  display:flex;gap:10px;
+}
+.btn-full{
+  flex:1;padding:10px;border-radius:11px;
+  font-size:13px;font-weight:700;
+  transition:all .18s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-full svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ══════════════════════════════════════════
+   NOTIFICATION PANEL
+══════════════════════════════════════════ */
+.notif-panel{
+  position:fixed;top:66px;right:16px;z-index:250;
+  width:360px;
+  background:var(--bg1);
+  border:1px solid var(--border2);
+  border-radius:18px;
+  box-shadow:0 24px 64px rgba(0,0,0,.7);
+  overflow:hidden;
+  display:none;
+}
+.notif-panel.open{
+  display:block;
+  animation:slideIn .2s ease;
+}
+.notif-head{
+  padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;
+}
+.notif-head-title{font-family:var(--syne);font-size:14px;font-weight:700;color:var(--text)}
+.notif-count{
+  font-size:10px;font-weight:700;
+  background:var(--orange);color:#fff;
+  padding:2px 7px;border-radius:5px;
+}
+.notif-item{
+  display:flex;gap:12px;padding:14px 18px;
+  border-bottom:1px solid var(--border);
+  transition:background .18s;cursor:pointer;
+}
+.notif-item:last-child{border-bottom:none}
+.notif-item:hover{background:rgba(255,255,255,.03)}
+.notif-item.unread{background:rgba(59,130,246,.04)}
+.notif-ico{
+  width:34px;height:34px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.notif-ico svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.notif-text{flex:1;min-width:0}
+.notif-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.notif-sub{font-size:11px;color:var(--text3);line-height:1.5}
+.notif-time{font-family:var(--mono);font-size:10px;color:var(--text4);margin-top:3px}
+.notif-unread-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--blue);flex-shrink:0;margin-top:4px;
+}
+
+/* ══════════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════════ */
+.empty-state{
+  text-align:center;padding:56px 24px;
+}
+.empty-state svg{
+  width:40px;height:40px;stroke:var(--border2);
+  fill:none;stroke-width:1.5;
+  stroke-linecap:round;stroke-linejoin:round;
+  margin:0 auto 14px;display:block;
+}
+.empty-title{font-size:15px;font-weight:600;color:var(--text2);margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--text3)}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media(max-width:1100px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .visa-grid{grid-template-columns:1fr}
+  .overview-grid{grid-template-columns:1fr}
+}
+@media(max-width:860px){
+  .sidebar{display:none}
+  .main{margin-left:0}
+  .app-row,.app-row-header{grid-template-columns:1fr auto}
+  .app-location,.app-date{display:none}
+}
+@media(max-width:600px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .page{padding:16px 16px 80px}
+  .drawer{width:100%;max-width:100%}
+  .notif-panel{width:calc(100vw - 32px)}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ TOP NAV ══ -->
+<nav class="topnav">
+  <a href="index.html" class="nav-logo" style="text-decoration:none" title="Ana sayfaya dön">
+    <div class="logo-dot">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+    </div>
+    <span class="logo-name">Visa<span>Path</span></span>
+  </a>
+  <div class="nav-sep"></div>
+  <span class="nav-crumb">Kontrol Paneli<span id="breadcrumb">Genel Bakış</span></span>
+
+  <div class="nav-right">
+    <a href="index.html" class="nav-btn" style="text-decoration:none">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      İş Ara
+    </a>
+    <button class="nav-notif" onclick="toggleNotif()">
+      <div class="notif-pip"></div>
+      <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </button>
+    <div class="avatar" onclick="toggleNotif()">AY</div>
+  </div>
+</nav>
+
+<!-- ══ NOTIFICATION PANEL ══ -->
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-head">
+    <span class="notif-head-title">Bildirimler</span>
+    <span class="notif-count">3</span>
+    <button class="btn-sm btn-outline" style="margin-left:auto;padding:4px 10px;font-size:11px">Tümünü Oku</button>
+  </div>
+  <div class="notif-item unread" onclick="navigateTo('applications')">
+    <div class="notif-ico" style="background:rgba(16,185,129,.15)">
+      <svg viewBox="0 0 24 24" style="stroke:#34d399"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <div class="notif-text">
+      <div class="notif-title">DeepMind geri döndü!</div>
+      <div class="notif-sub">ML Research Scientist pozisyonu için mülakat daveti aldınız. Pazartesi 14:00 için slot seçin.</div>
+      <div class="notif-time">12 dakika önce</div>
+    </div>
+    <div class="notif-unread-dot"></div>
+  </div>
+  <div class="notif-item unread" onclick="navigateTo('visa')">
+    <div class="notif-ico" style="background:rgba(139,92,246,.15)">
+      <svg viewBox="0 0 24 24" style="stroke:#a78bfa"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    </div>
+    <div class="notif-text">
+      <div class="notif-title">Belge Hatırlatması</div>
+      <div class="notif-sub">UK Skilled Worker başvurusu için apostille belgesi 7 gün içinde teslim edilmeli.</div>
+      <div class="notif-time">2 saat önce</div>
+    </div>
+    <div class="notif-unread-dot"></div>
+  </div>
+  <div class="notif-item unread" onclick="navigateTo('companies')">
+    <div class="notif-ico" style="background:rgba(59,130,246,.15)">
+      <svg viewBox="0 0 24 24" style="stroke:#60a5fa"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    </div>
+    <div class="notif-text">
+      <div class="notif-title">Shopify profilinizi inceledi</div>
+      <div class="notif-sub">Senior Full-Stack Engineer başvurunuz işe alım ekibine iletildi.</div>
+      <div class="notif-time">1 gün önce</div>
+    </div>
+    <div class="notif-unread-dot"></div>
+  </div>
+  <div class="notif-item">
+    <div class="notif-ico" style="background:rgba(245,158,11,.12)">
+      <svg viewBox="0 0 24 24" style="stroke:#fbbf24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div class="notif-text">
+      <div class="notif-title">Airbus başvurusu güncellendi</div>
+      <div class="notif-sub">Teknik mülakat aşamasına geçildi. Kodlama testi gönderildi.</div>
+      <div class="notif-time">3 gün önce</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sb-section-label">Ana Menü</div>
+  <div class="sb-link active" onclick="navigateTo('overview')">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    Genel Bakış
+  </div>
+  <div class="sb-link" onclick="navigateTo('applications')">
+    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Başvurularım
+    <span class="sb-badge">8</span>
+  </div>
+  <div class="sb-link" onclick="navigateTo('companies')">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Şirket Yanıtları
+    <span class="sb-badge" style="background:rgba(16,185,129,.25);color:var(--green-lt)">3</span>
+  </div>
+  <div class="sb-link" onclick="navigateTo('visa')">
+    <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+    Vize Takibi
+    <span class="sb-badge" style="background:rgba(139,92,246,.25);color:#c4b5fd">●</span>
+  </div>
+
+  <div class="sb-section-label">Araçlar</div>
+  <div class="sb-link" onclick="navigateTo('docs')">
+    <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+    Belgelerim
+    <span class="sb-badge blue">12</span>
+  </div>
+  <div class="sb-link">
+    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01M15 9h.01M9 15h6"/></svg>
+    AI Danışman
+    <span class="sb-badge" style="background:rgba(6,182,212,.2);color:var(--cyan-lt);font-size:9px">CANLI</span>
+  </div>
+  <div class="sb-link">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+    İş Önerileri
+  </div>
+
+  <div class="sb-section-label">Ayarlar</div>
+  <div class="sb-link">
+    <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Profilim
+  </div>
+  <div class="sb-link">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+    Tercihler
+  </div>
+
+  <a href="index.html" class="sb-link" style="text-decoration:none;color:var(--text4);margin-top:4px;border:1px solid transparent;transition:all .18s" onmouseover="this.style.color='#f87171';this.style.background='rgba(239,68,68,.06)';this.style.borderColor='rgba(239,68,68,.15)'" onmouseout="this.style.color='var(--text4)';this.style.background='';this.style.borderColor='transparent'">
+    <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Çıkış Yap
+  </a>
+
+  <div class="sb-user">
+    <div class="sb-user-ava">AY</div>
+    <div>
+      <div class="sb-user-name">Ahmet Yılmaz</div>
+      <div class="sb-user-role">Pro Plan · aktif</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════════
+     PAGES
+══════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- ── OVERVIEW PAGE ── -->
+  <div class="page active" id="page-overview">
+    <div class="page-header anim-1">
+      <div class="page-title">Genel Bakış</div>
+      <div class="page-sub">Hoşgeldin, <strong>Ahmet</strong> — 3 yeni güncelleme var</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card anim-1" style="--card-accent:var(--blue)">
+        <div class="stat-icon" style="background:rgba(59,130,246,.15);color:var(--blue-lt)">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <div class="stat-val">8</div>
+        <div class="stat-label">Aktif Başvuru</div>
+        <div class="stat-delta delta-up">+2 bu ay</div>
+      </div>
+      <div class="stat-card anim-2" style="--card-accent:var(--green)">
+        <div class="stat-icon" style="background:rgba(16,185,129,.15);color:var(--green-lt)">
+          <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </div>
+        <div class="stat-val">3</div>
+        <div class="stat-label">Şirket Yanıtı</div>
+        <div class="stat-delta delta-up">↑ 1 yeni</div>
+      </div>
+      <div class="stat-card anim-3" style="--card-accent:var(--purple)">
+        <div class="stat-icon" style="background:rgba(139,92,246,.15);color:#c4b5fd">
+          <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
+        <div class="stat-val">65<span style="font-size:16px;color:var(--text3)">%</span></div>
+        <div class="stat-label">Vize İlerlemesi</div>
+        <div class="stat-delta delta-up">UK Skilled</div>
+      </div>
+      <div class="stat-card anim-4" style="--card-accent:var(--orange)">
+        <div class="stat-icon" style="background:rgba(249,115,22,.15);color:var(--orange)">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="stat-val">7</div>
+        <div class="stat-label">Gün (Son Teslim)</div>
+        <div class="stat-delta days-urgent">Apostille!</div>
+      </div>
+    </div>
+
+    <!-- Two-column grid -->
+    <div class="overview-grid anim-5">
+      <!-- Recent applications -->
+      <div class="section-card">
+        <div class="section-head">
+          <span class="section-head-title">Son Başvurular</span>
+          <div class="head-actions">
+            <button class="btn-sm btn-outline" onclick="navigateTo('applications')">Tümünü Gör</button>
+          </div>
+        </div>
+        <div id="overviewAppList"></div>
+      </div>
+
+      <!-- Activity -->
+      <div class="section-card">
+        <div class="section-head">
+          <span class="section-head-title">Son Aktivite</span>
+        </div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </div>
+
+    <!-- Activity heatmap -->
+    <div class="section-card anim-6">
+      <div class="section-head">
+        <span class="section-head-title">Başvuru Aktivitesi</span>
+        <span class="section-head-sub">Son 12 hafta</span>
+      </div>
+      <div class="activity-strip" id="heatmap"></div>
+    </div>
+  </div>
+
+  <!-- ── APPLICATIONS PAGE ── -->
+  <div class="page" id="page-applications">
+    <div class="page-header anim-1">
+      <div class="page-title">Başvurularım</div>
+      <div class="page-sub"><strong>8</strong> aktif başvuru takip ediliyor</div>
+    </div>
+
+    <div class="section-card anim-2">
+      <div class="section-head">
+        <span class="section-head-title">Tüm Başvurular</span>
+        <div class="head-actions">
+          <button class="btn-sm btn-outline">
+            <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+            Filtrele
+          </button>
+          <button class="btn-sm btn-blue">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            İlan Ekle
+          </button>
+        </div>
+      </div>
+      <!-- Filter tabs -->
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterApps('all',this)">Tümü<span class="tab-count">8</span></button>
+        <button class="filter-tab" onclick="filterApps('interview',this)">Mülakat<span class="tab-count">2</span></button>
+        <button class="filter-tab" onclick="filterApps('review',this)">İncelemede<span class="tab-count">3</span></button>
+        <button class="filter-tab" onclick="filterApps('offer',this)">Teklif<span class="tab-count">1</span></button>
+        <button class="filter-tab" onclick="filterApps('visa',this)">Vize Aşaması<span class="tab-count">1</span></button>
+        <button class="filter-tab" onclick="filterApps('rejected',this)">Reddedildi<span class="tab-count">1</span></button>
+      </div>
+      <!-- Column headers -->
+      <div class="app-row-header">
+        <div class="col-label">Şirket / Pozisyon</div>
+        <div class="col-label">Konum</div>
+        <div class="col-label">Tarih</div>
+        <div class="col-label">Durum</div>
+        <div class="col-label" style="text-align:right">İşlemler</div>
+      </div>
+      <div id="appList"></div>
+    </div>
+  </div>
+
+  <!-- ── COMPANIES PAGE ── -->
+  <div class="page" id="page-companies">
+    <div class="page-header anim-1">
+      <div class="page-title">Şirket Yanıtları</div>
+      <div class="page-sub"><strong>3</strong> şirketten geri dönüş var</div>
+    </div>
+
+    <div class="section-card anim-2">
+      <div class="section-head">
+        <span class="section-head-title">Geri Dönen Şirketler</span>
+        <span class="section-head-sub">En yeni önce</span>
+      </div>
+      <div id="responseList"></div>
+    </div>
+
+    <!-- Stats below -->
+    <div class="stats-row anim-3" style="margin-top:20px">
+      <div class="stat-card" style="--card-accent:var(--green)">
+        <div class="stat-icon" style="background:rgba(16,185,129,.15);color:var(--green-lt)">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="stat-val">3</div>
+        <div class="stat-label">Olumlu Yanıt</div>
+      </div>
+      <div class="stat-card" style="--card-accent:var(--cyan)">
+        <div class="stat-icon" style="background:rgba(6,182,212,.15);color:var(--cyan-lt)">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="stat-val">2</div>
+        <div class="stat-label">Mülakat Daveti</div>
+      </div>
+      <div class="stat-card" style="--card-accent:var(--amber)">
+        <div class="stat-icon" style="background:rgba(245,158,11,.15);color:var(--amber)">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="stat-val">5</div>
+        <div class="stat-label">Yanıt Bekliyor</div>
+      </div>
+      <div class="stat-card" style="--card-accent:var(--red)">
+        <div class="stat-icon" style="background:rgba(239,68,68,.12);color:#f87171">
+          <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </div>
+        <div class="stat-val">1</div>
+        <div class="stat-label">Olumsuz Yanıt</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VISA TRACKING PAGE ── -->
+  <div class="page" id="page-visa">
+    <div class="page-header anim-1">
+      <div class="page-title">Vize Takibi</div>
+      <div class="page-sub">UK Skilled Worker Visa — <strong>aktif süreç</strong></div>
+    </div>
+
+    <div class="visa-grid">
+      <!-- Main stepper -->
+      <div class="section-card anim-2">
+        <div class="section-head">
+          <span class="section-head-title">🇬🇧 UK Skilled Worker Visa</span>
+          <div class="head-actions">
+            <span class="status-badge s-visa">Süreç Devam Ediyor</span>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div style="padding:20px 22px 0">
+          <div class="visa-progress">
+            <div class="progress-header">
+              <span class="progress-label">Genel İlerleme</span>
+              <span class="progress-pct">65%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" style="width:65%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Steps -->
+        <div class="visa-stepper">
+          <div class="visa-stepper-title">Başvuru Süreci</div>
+          <div class="visa-stepper-meta">İşveren: <strong>DeepMind Ltd.</strong> · Başlangıç: 15 Ocak 2025</div>
+
+          <div class="steps">
+
+            <div class="step done">
+              <div class="step-left">
+                <div class="step-dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">İş Teklifi Alındı</div>
+                <div class="step-desc">DeepMind'dan resmi iş teklifi mektubu ve sözleşme imzalandı.</div>
+                <div class="step-date">✓ Tamamlandı · 15 Ocak 2025</div>
+              </div>
+            </div>
+
+            <div class="step done">
+              <div class="step-left">
+                <div class="step-dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">CoS (Certificate of Sponsorship) Alındı</div>
+                <div class="step-desc">İşveren sponsorluk sertifikasını UKVI sistemine yükledi. Referans numaranız: CoS-2025-DM-4471</div>
+                <div class="step-date">✓ Tamamlandı · 22 Ocak 2025</div>
+                <div class="step-docs">
+                  <div class="step-doc" style="cursor:pointer">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    CoS Sertifikası (PDF)
+                    <span class="doc-status doc-ok">✓ İndirildi</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step done">
+              <div class="step-left">
+                <div class="step-dot"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">Evrak Hazırlığı</div>
+                <div class="step-desc">Gerekli belgeler hazırlandı ve kontrol edildi.</div>
+                <div class="step-date">✓ Tamamlandı · 28 Ocak 2025</div>
+                <div class="step-docs">
+                  <div class="step-doc">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/></svg>
+                    Pasaport kopyası
+                    <span class="doc-status doc-ok">✓ Yüklendi</span>
+                  </div>
+                  <div class="step-doc">
+                    <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                    Diploma (İngilizce tercüme)
+                    <span class="doc-status doc-ok">✓ Yüklendi</span>
+                  </div>
+                  <div class="step-doc">
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                    Apostille belgesi
+                    <span class="doc-status doc-missing">⚠ Eksik — 7 gün!</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step current">
+              <div class="step-left">
+                <div class="step-dot"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">Online Başvuru Formu</div>
+                <div class="step-desc">UKVI portalındaki başvuru formu tamamlanıyor. Biyometrik randevu tarihi bekleniyor.</div>
+                <div class="step-date">⟳ Devam ediyor · Son güncelleme: bugün</div>
+                <div class="step-docs">
+                  <div class="step-doc" style="cursor:pointer;border-color:rgba(59,130,246,.3)">
+                    <svg viewBox="0 0 24 24" style="stroke:var(--blue-lt)"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    UKVI Başvuru Portalı'na Git
+                    <span class="doc-status doc-review">Devam Et</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="step pending">
+              <div class="step-left">
+                <div class="step-dot"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">Biyometrik Randevu</div>
+                <div class="step-desc">Parmak izi ve fotoğraf için UKVCAS ofisine gidilecek.</div>
+                <div class="step-date">Bekliyor</div>
+              </div>
+            </div>
+
+            <div class="step pending">
+              <div class="step-left">
+                <div class="step-dot"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+                <div class="step-line"></div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">UKVI Kararı</div>
+                <div class="step-desc">Home Office değerlendirme süreci (ortalama 3-8 hafta).</div>
+                <div class="step-date">Bekliyor</div>
+              </div>
+            </div>
+
+            <div class="step pending">
+              <div class="step-left">
+                <div class="step-dot"><svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></div>
+              </div>
+              <div class="step-body">
+                <div class="step-name">Vize Onaylandı — Londra'ya Uç! 🎉</div>
+                <div class="step-desc">Biometric Residence Permit (BRP) kart teslim edilecek.</div>
+                <div class="step-date">Bekliyor</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Right sidebar -->
+      <div>
+        <!-- Key info -->
+        <div class="info-card anim-3">
+          <div class="info-card-head">📋 Başvuru Detayları</div>
+          <div class="info-card-body">
+            <div class="info-row">
+              <span class="info-key">Vize Türü</span>
+              <span class="info-val">UK Skilled Worker</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">İşveren</span>
+              <span class="info-val">DeepMind Ltd.</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">CoS Referans</span>
+              <span class="info-val mono">DM-2025-4471</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Başvuru Ücreti</span>
+              <span class="info-val">£1,423</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">IHS Ücreti</span>
+              <span class="info-val">£3,120 (3 yıl)</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Süreç Başlangıç</span>
+              <span class="info-val mono">15 Oca 2025</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Tahmini Karar</span>
+              <span class="info-val" style="color:var(--amber)">Mart 2025</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deadlines -->
+        <div class="info-card anim-4">
+          <div class="info-card-head">⏰ Yaklaşan Son Tarihler</div>
+          <div class="info-card-body">
+            <div class="deadline-item">
+              <div class="deadline-dot" style="background:var(--orange)"></div>
+              <div class="deadline-info">
+                <div class="deadline-name">Apostille belgesi teslimi</div>
+                <div class="deadline-date">14 Şubat 2025</div>
+              </div>
+              <span class="deadline-days days-urgent">7 gün</span>
+            </div>
+            <div class="deadline-item">
+              <div class="deadline-dot" style="background:var(--amber)"></div>
+              <div class="deadline-info">
+                <div class="deadline-name">Online form tamamlama</div>
+                <div class="deadline-date">28 Şubat 2025</div>
+              </div>
+              <span class="deadline-days days-soon">21 gün</span>
+            </div>
+            <div class="deadline-item">
+              <div class="deadline-dot" style="background:var(--green)"></div>
+              <div class="deadline-info">
+                <div class="deadline-name">Biyometrik randevu</div>
+                <div class="deadline-date">10 Mart 2025</div>
+              </div>
+              <span class="deadline-days days-ok">31 gün</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Second visa in progress -->
+        <div class="info-card anim-5">
+          <div class="info-card-head">🇩🇪 EU Blue Card — Hazırlık</div>
+          <div class="info-card-body">
+            <div style="margin-bottom:12px">
+              <div class="progress-header" style="margin-bottom:8px">
+                <span class="progress-label">İlerleme</span>
+                <span class="progress-pct" style="color:var(--purple)">20%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" style="width:20%;background:linear-gradient(90deg,var(--purple),#818cf8)"></div>
+              </div>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Durum</span>
+              <span class="info-val" style="color:#c4b5fd">Belge Toplama</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Şirket</span>
+              <span class="info-val">Airbus SE</span>
+            </div>
+            <div class="info-row">
+              <span class="info-key">Konum</span>
+              <span class="info-val">Hamburg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── DOCUMENTS PAGE ── -->
+  <div class="page" id="page-docs">
+    <div class="page-header anim-1">
+      <div class="page-title">Belgelerim</div>
+      <div class="page-sub"><strong>12</strong> belge yüklendi · <strong>1</strong> eksik</div>
+    </div>
+    <div class="section-card anim-2">
+      <div class="section-head">
+        <span class="section-head-title">Belge Yönetimi</span>
+        <div class="head-actions">
+          <button class="btn-sm btn-blue">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Belge Yükle
+          </button>
+        </div>
+      </div>
+      <div id="docList"></div>
+    </div>
+  </div>
+
+</main><!-- end .main -->
+
+<!-- ══ DETAIL DRAWER ══ -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div id="drawerLogo" class="company-ava" style="width:42px;height:42px;border-radius:12px"></div>
+    <div>
+      <div id="drawerTitle" style="font-family:var(--syne);font-size:15px;font-weight:700;color:var(--text)"></div>
+      <div id="drawerSub" style="font-size:12px;color:var(--text3);margin-top:2px"></div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">
+      <div class="drawer-section-title">Başvuru Detayları</div>
+      <div id="drawerFields"></div>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Notlar</div>
+      <textarea class="note-box" placeholder="Bu başvuru hakkında not ekleyin..."></textarea>
+    </div>
+    <div class="drawer-section">
+      <div class="drawer-section-title">Bağlı Belgeler</div>
+      <div id="drawerDocs"></div>
+    </div>
+  </div>
+  <div class="drawer-foot">
+    <button class="btn-full btn-outline" onclick="closeDrawer()" style="border:1px solid var(--border2);color:var(--text2)">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      Kapat
+    </button>
+    <button class="btn-full btn-blue">
+      <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Durumu Güncelle
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     DATA & JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+/* ── DATA ─────────────────────────────────────────────── */
+const APPS = [
+  { id:1, company:"DeepMind",   logo:"DM", logoBg:"#1a1a2e", logoColor:"#818cf8",
+    title:"ML Research Scientist",  location:"Londra, UK",      date:"2025-01-15",
+    status:"interview", visa:"Skilled Worker",  salary:"£120K–£160K",
+    visaColor:"#a78bfa", sponsor:89, notes:"Mülakat Pazartesi 14:00 — video call link geldi" },
+  { id:2, company:"Shopify",    logo:"SH", logoBg:"#1a2a0a", logoColor:"#96BF48",
+    title:"Senior Full-Stack Eng",  location:"Ottawa, CA",      date:"2025-01-18",
+    status:"review",    visa:"Express Entry",   salary:"$140K–$180K",
+    visaColor:"#3b82f6", sponsor:47, notes:"CV işe alım ekibine iletildi" },
+  { id:3, company:"Airbus SE",  logo:"AB", logoBg:"#0a1a2a", logoColor:"#38bdf8",
+    title:"Aerospace Structures Eng",location:"Hamburg, DE",    date:"2025-01-20",
+    status:"interview", visa:"EU Blue Card",    salary:"€85K–€110K",
+    visaColor:"#2563eb", sponsor:61, notes:"Kodlama testi gönderildi — 72 saat süresi var" },
+  { id:4, company:"Roche AG",   logo:"RO", logoBg:"#0a1f16", logoColor:"#34d399",
+    title:"Biomedical Researcher",  location:"Basel, CH",       date:"2025-01-22",
+    status:"offer",     visa:"EU Blue Card",    salary:"CHF 115K",
+    visaColor:"#2563eb", sponsor:72, notes:"Teklif mektubu alındı! İmzalamak için 5 gün var." },
+  { id:5, company:"Palantir",   logo:"PT", logoBg:"#0a1e22", logoColor:"#22d3ee",
+    title:"Cybersecurity Architect", location:"New York, US",   date:"2025-01-25",
+    status:"visa",      visa:"H-1B",            salary:"$160K–$200K",
+    visaColor:"#f97316", sponsor:28, notes:"CoS alındı. UKVI başvurusu devam ediyor." },
+  { id:6, company:"HSBC",       logo:"HC", logoBg:"#1a0a0a", logoColor:"#f87171",
+    title:"Quantitative Analyst",   location:"Londra, UK",      date:"2025-01-10",
+    status:"rejected",  visa:"Skilled Worker",  salary:"£85K–£110K",
+    visaColor:"#a78bfa", sponsor:134, notes:"Reddedildi — yeterli deneyim yok mesajı" },
+  { id:7, company:"Mayo Clinic",logo:"MC", logoBg:"#2a0a14", logoColor:"#f43f5e",
+    title:"Kardiyoloji Uzmanı",     location:"Rochester, US",   date:"2025-01-28",
+    status:"applied",   visa:"H-1B",            salary:"$300K–$420K",
+    visaColor:"#f97316", sponsor:134, notes:"Başvuru tamamlandı, yanıt bekleniyor" },
+  { id:8, company:"SAP SE",     logo:"SP", logoBg:"#1a1208", logoColor:"#fbbf24",
+    title:"Cloud Infra Engineer",   location:"Walldorf, DE",    date:"2025-01-30",
+    status:"review",    visa:"EU Blue Card",    salary:"€75K–€100K",
+    visaColor:"#2563eb", sponsor:61, notes:"Ön eleme aşamasında" },
+];
+
+const STATUS_MAP = {
+  applied:   { label:"Başvuruldu",    cls:"s-applied"   },
+  review:    { label:"İncelemede",    cls:"s-review"    },
+  interview: { label:"Mülakat",       cls:"s-interview" },
+  offer:     { label:"Teklif Alındı", cls:"s-offer"     },
+  rejected:  { label:"Reddedildi",    cls:"s-rejected"  },
+  visa:      { label:"Vize Aşaması",  cls:"s-visa"      },
+};
+
+const RESPONSES = [
+  { id:1, company:"DeepMind", logo:"DM", logoBg:"#1a1a2e", logoColor:"#818cf8",
+    msg:"Mülakat daveti: ML Research Scientist pozisyonu için Pazartesi 14:00 video görüşmesi",
+    badge:"rb-interview", badgeLabel:"Mülakat", time:"12 dakika önce", unread:true },
+  { id:2, company:"Shopify", logo:"SH", logoBg:"#1a2a0a", logoColor:"#96BF48",
+    msg:"Profiliniz işe alım ekibine iletildi. Yakında detaylı bilgi verilecek.",
+    badge:"rb-positive", badgeLabel:"İletildi", time:"1 gün önce", unread:true },
+  { id:3, company:"Airbus SE", logo:"AB", logoBg:"#0a1a2a", logoColor:"#38bdf8",
+    msg:"Teknik mülakat aşamasına geçildi. Kodlama testi e-posta adresinize gönderildi.",
+    badge:"rb-interview", badgeLabel:"Teknik Test", time:"3 gün önce", unread:false },
+  { id:4, company:"Roche AG", logo:"RO", logoBg:"#0a1f16", logoColor:"#34d399",
+    msg:"Teklif mektubunu imzalamak için 5 iş günü süreniz var. Detayları inceleyiniz.",
+    badge:"rb-positive", badgeLabel:"Teklif!", time:"5 gün önce", unread:false },
+  { id:5, company:"HSBC", logo:"HC", logoBg:"#1a0a0a", logoColor:"#f87171",
+    msg:"Başvurunuzu değerlendirdik. Bu pozisyon için yeterli deneyim kriterini karşılamıyorsunuz.",
+    badge:"rb-rejected", badgeLabel:"Olumsuz", time:"2 hafta önce", unread:false },
+];
+
+const DOCS = [
+  { name:"Türk Pasaportu", type:"Kimlik", status:"ok",      updated:"15 Oca 2025", size:"2.4 MB" },
+  { name:"Lisans Diploması (TR)", type:"Eğitim", status:"ok", updated:"16 Oca 2025", size:"1.8 MB" },
+  { name:"Diploma İngilizce Tercüme", type:"Eğitim", status:"ok", updated:"18 Oca 2025", size:"950 KB" },
+  { name:"CoS Sertifikası (DeepMind)", type:"Vize", status:"ok", updated:"22 Oca 2025", size:"320 KB" },
+  { name:"İş Teklif Mektubu", type:"İstihdam", status:"ok", updated:"22 Oca 2025", size:"210 KB" },
+  { name:"Banka Hesap Özeti (6 ay)", type:"Finans", status:"ok", updated:"25 Oca 2025", size:"1.2 MB" },
+  { name:"Özgeçmiş (İngilizce)", type:"Kariyer", status:"ok", updated:"10 Oca 2025", size:"180 KB" },
+  { name:"İngilizce Dil Sertifikası (IELTS)", type:"Dil", status:"ok", updated:"1 Oca 2025", size:"440 KB" },
+  { name:"Referans Mektubu #1", type:"Referans", status:"ok", updated:"20 Oca 2025", size:"150 KB" },
+  { name:"Referans Mektubu #2", type:"Referans", status:"ok", updated:"20 Oca 2025", size:"148 KB" },
+  { name:"Biyometrik Fotoğraf", type:"Kimlik", status:"ok", updated:"28 Oca 2025", size:"540 KB" },
+  { name:"Apostille Belgesi", type:"Resmi", status:"missing", updated:"—", size:"Henüz yok" },
+];
+
+const TIMELINE = [
+  { icon:"check", color:"rgba(16,185,129,.2)", stroke:"#34d399",
+    title:"DeepMind mülakat daveti gönderdi", sub:"ML Research Scientist · Pazartesi 14:00", time:"12 dk önce" },
+  { icon:"file", color:"rgba(139,92,246,.15)", stroke:"#a78bfa",
+    title:"CoS başvurusu UKVI'ya iletildi", sub:"Referans: DM-2025-4471", time:"3 sa önce" },
+  { icon:"star", color:"rgba(245,158,11,.15)", stroke:"#fbbf24",
+    title:"Roche teklif mektubunu imzaladınız", sub:"CHF 115K · Basel, İsviçre", time:"5 gün önce" },
+  { icon:"send", color:"rgba(59,130,246,.15)", stroke:"#60a5fa",
+    title:"Airbus teknik testi gönderildi", sub:"72 saat süre · Hamburg", time:"3 gün önce" },
+  { icon:"x", color:"rgba(239,68,68,.12)", stroke:"#f87171",
+    title:"HSBC başvurusu reddedildi", sub:"Quantitative Analyst · Londra", time:"2 hafta önce" },
+];
+
+/* ── ICON HELPERS ──────────────────────────────────────── */
+function iconSVG(name,w=13,h=13,stroke="currentColor",sw=2){
+  const a = `width="${w}" height="${h}" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round"`;
+  const icons={
+    check:`<svg ${a}><polyline points="20 6 9 17 4 12"/></svg>`,
+    file:`<svg ${a}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+    send:`<svg ${a}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>`,
+    star:`<svg ${a}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    x:`<svg ${a}><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+    map:`<svg ${a}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+    edit:`<svg ${a}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
+    eye:`<svg ${a}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`,
+    dl:`<svg ${a}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`,
+    folder:`<svg ${a}><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>`,
+  };
+  return icons[name]||icons.file;
+}
+
+/* ── RENDER: OVERVIEW APPS ──────────────────────────────── */
+function renderOverviewApps(){
+  const el = document.getElementById('overviewAppList');
+  const items = APPS.slice(0,5);
+  el.innerHTML = items.map(a => {
+    const s = STATUS_MAP[a.status];
+    return `
+    <div class="app-row" onclick="openDrawer(${a.id})" style="grid-template-columns:1fr 120px">
+      <div class="app-company">
+        <div class="company-ava" style="background:${a.logoBg};color:${a.logoColor}">${a.logo}</div>
+        <div>
+          <div class="company-info-name">${a.company}</div>
+          <div class="company-info-title">${a.title}</div>
+        </div>
+      </div>
+      <span class="status-badge ${s.cls}">${s.label}</span>
+    </div>`;
+  }).join('');
+}
+
+/* ── RENDER: APPLICATIONS ────────────────────────────────── */
+let activeFilter = 'all';
+function renderApps(filter){
+  const el = document.getElementById('appList');
+  const data = filter==='all' ? APPS : APPS.filter(a=>a.status===filter);
+  if(!data.length){
+    el.innerHTML=`<div class="empty-state">
+      ${iconSVG('file',40,40,'#1e3a5f',1.5)}
+      <div class="empty-title">Bu filtrede başvuru yok</div>
+      <div class="empty-sub">Farklı bir filtre seçin</div>
+    </div>`;
+    return;
+  }
+  el.innerHTML = data.map(a => {
+    const s = STATUS_MAP[a.status];
+    return `
+    <div class="app-row" onclick="openDrawer(${a.id})">
+      <div class="app-company">
+        <div class="company-ava" style="background:${a.logoBg};color:${a.logoColor}">${a.logo}</div>
+        <div>
+          <div class="company-info-name">${a.company}</div>
+          <div class="company-info-title">${a.title}</div>
+        </div>
+      </div>
+      <div class="app-location">${iconSVG('map')} ${a.location}</div>
+      <div class="app-date">${a.date.replace(/-/g,'.')}</div>
+      <span class="status-badge ${s.cls}">${s.label}</span>
+      <div class="row-actions">
+        <button class="row-btn" title="Detay">${iconSVG('eye')}</button>
+        <button class="row-btn" title="Düzenle">${iconSVG('edit')}</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function filterApps(filter, btn){
+  activeFilter = filter;
+  document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderApps(filter);
+}
+
+/* ── RENDER: RESPONSES ───────────────────────────────────── */
+function renderResponses(){
+  const el = document.getElementById('responseList');
+  el.innerHTML = RESPONSES.map(r => `
+    <div class="response-item${r.unread?' unread':''}">
+      <div class="resp-logo" style="background:${r.logoBg};color:${r.logoColor}">${r.logo}</div>
+      <div class="resp-body">
+        <div class="resp-name">${r.company}</div>
+        <div class="resp-msg">${r.msg}</div>
+        <div class="resp-time">${r.time}</div>
+      </div>
+      <div class="resp-right">
+        <span class="resp-badge ${r.badge}">${r.badgeLabel}</span>
+        ${r.unread?'<div class="resp-unread-dot"></div>':''}
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── RENDER: TIMELINE ─────────────────────────────────────── */
+function renderTimeline(){
+  const el = document.getElementById('timeline');
+  el.innerHTML = TIMELINE.map(t => `
+    <div class="tl-item">
+      <div class="tl-icon" style="background:${t.color};color:${t.stroke}">
+        ${iconSVG(t.icon,13,13,t.stroke)}
+      </div>
+      <div class="tl-body">
+        <div class="tl-title">${t.title}</div>
+        <div class="tl-sub">${t.sub}</div>
+        <div class="tl-time">${t.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── RENDER: DOCS ─────────────────────────────────────────── */
+function renderDocs(){
+  const el = document.getElementById('docList');
+  // header
+  el.innerHTML = `
+  <div class="app-row-header" style="grid-template-columns:2fr 1fr 1fr 100px 80px">
+    <div class="col-label">Belge Adı</div>
+    <div class="col-label">Tür</div>
+    <div class="col-label">Güncelleme</div>
+    <div class="col-label">Boyut</div>
+    <div class="col-label" style="text-align:right">İşlem</div>
+  </div>` + DOCS.map(d => {
+    const isOk = d.status==='ok';
+    return `
+    <div class="app-row" style="grid-template-columns:2fr 1fr 1fr 100px 80px">
+      <div class="app-company">
+        <div class="company-ava" style="background:${isOk?'rgba(16,185,129,.12)':'rgba(249,115,22,.12)'};color:${isOk?'#34d399':'#fb923c'};width:34px;height:34px;border-radius:9px;font-size:11px">
+          ${isOk?iconSVG('file',14,14,'#34d399'):iconSVG('x',14,14,'#fb923c')}
+        </div>
+        <div>
+          <div class="company-info-name">${d.name}</div>
+          <div class="company-info-title" style="color:${isOk?'var(--text3)':'var(--orange)'}">${isOk?'✓ Yüklendi':'⚠ Eksik — Yükle'}</div>
+        </div>
+      </div>
+      <div style="font-size:12px;color:var(--text3)">${d.type}</div>
+      <div class="app-date">${d.updated}</div>
+      <div style="font-size:12px;color:var(--text3);font-family:var(--mono)">${d.size}</div>
+      <div class="row-actions">
+        ${isOk?`<button class="row-btn" title="İndir">${iconSVG('dl')}</button>`:`<button class="btn-sm btn-blue" style="padding:5px 10px;font-size:11px">Yükle</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ── RENDER: HEATMAP ─────────────────────────────────────── */
+function renderHeatmap(){
+  const el = document.getElementById('heatmap');
+  const levels = [0,0,1,0,2,1,0,3,2,1,4,2,3,1,0,2,4,3,2,1,
+                  0,1,2,3,2,1,0,1,3,4,2,1,0,2,3,1,0,4,3,2,
+                  1,0,1,2,3,1,0,2,4,3,1,0,1,2,3,1,2,3,4,2,
+                  1,0,2,1,3,2,1,0,2,3,4,1,2,3,1,0,2,4,3,1,
+                  0,2,3,4];
+  let html = '';
+  for(let w=0;w<12;w++){
+    html += '<div class="activity-col">';
+    for(let d=0;d<7;d++){
+      const idx = w*7+d;
+      const lv = levels[idx]||0;
+      html += `<div class="activity-cell${lv>0?' ac-'+lv:''}" title="${lv} başvuru"></div>`;
+    }
+    html += '</div>';
+  }
+  el.innerHTML = html;
+}
+
+/* ── DRAWER ──────────────────────────────────────────────── */
+function openDrawer(id){
+  const a = APPS.find(x=>x.id===id);
+  if(!a) return;
+  const s = STATUS_MAP[a.status];
+
+  document.getElementById('drawerLogo').textContent = a.logo;
+  document.getElementById('drawerLogo').style.cssText = `background:${a.logoBg};color:${a.logoColor};width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;border:1px solid rgba(255,255,255,.06)`;
+  document.getElementById('drawerTitle').textContent = a.title;
+  document.getElementById('drawerSub').textContent = a.company + ' · ' + a.location;
+
+  document.getElementById('drawerFields').innerHTML = [
+    ['Şirket', a.company],
+    ['Pozisyon', a.title],
+    ['Konum', a.location],
+    ['Başvuru Tarihi', a.date],
+    ['Maaş Aralığı', a.salary],
+    ['Vize Türü', a.visa],
+    ['Sponsor Sayısı', a.sponsor + ' (son 12 ay)'],
+    ['Durum', `<span class="status-badge ${s.cls}">${s.label}</span>`],
+  ].map(([k,v])=>`
+    <div class="drawer-field">
+      <div class="drawer-field-label">${k}</div>
+      <div class="drawer-field-val">${v}</div>
+    </div>
+  `).join('');
+
+  document.getElementById('drawerDocs').innerHTML = `
+    <div class="step-doc" style="cursor:pointer">
+      ${iconSVG('file',13,13,'#60a5fa')} İş Teklif Mektubu
+      <span class="doc-status doc-ok">✓</span>
+    </div>
+    <div class="step-doc" style="cursor:pointer">
+      ${iconSVG('file',13,13,'#60a5fa')} CV (İngilizce)
+      <span class="doc-status doc-ok">✓</span>
+    </div>
+  `;
+
+  // pre-fill note
+  document.querySelector('.note-box').value = a.notes;
+
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+}
+function closeDrawer(){
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+/* ── NAVIGATION ──────────────────────────────────────────── */
+const PAGE_LABELS = {
+  overview:'Genel Bakış', applications:'Başvurularım',
+  companies:'Şirket Yanıtları', visa:'Vize Takibi', docs:'Belgelerim'
+};
+function navigateTo(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
+
+  const el = document.getElementById('page-'+page);
+  if(el) el.classList.add('active');
+
+  document.querySelectorAll('.sb-link').forEach(l=>{
+    if(l.textContent.trim().startsWith(PAGE_LABELS[page]?.split(' ')[0]||''))
+      l.classList.add('active');
+  });
+
+  document.getElementById('breadcrumb').textContent = PAGE_LABELS[page]||page;
+
+  // Close notif panel if open
+  document.getElementById('notifPanel').classList.remove('open');
+  // Close drawer
+  closeDrawer();
+  // Scroll top
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── NOTIFICATIONS ───────────────────────────────────────── */
+let notifOpen = false;
+function toggleNotif(){
+  notifOpen = !notifOpen;
+  document.getElementById('notifPanel').classList.toggle('open', notifOpen);
+}
+document.addEventListener('click', e=>{
+  const panel = document.getElementById('notifPanel');
+  if(notifOpen && !panel.contains(e.target) &&
+     !e.target.closest('.nav-notif') && !e.target.closest('.avatar')){
+    notifOpen = false;
+    panel.classList.remove('open');
+  }
+});
+
+/* ── INIT ──────────────────────────────────────────────── */
+renderOverviewApps();
+renderApps('all');
+renderResponses();
+renderTimeline();
+renderDocs();
+renderHeatmap();
+</script>
+</body>
+</html>
