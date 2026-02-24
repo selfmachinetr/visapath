@@ -1,66 +1,33 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VisaPath — Vize Sponsorlu Kariyer Portalı</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        :root { --bg: #080f1a; --card: #0f172a; --accent: #3b82f6; --text: #e2e8f0; --sub: #94a3b8; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); margin: 0; line-height: 1.6; }
-        nav { display: flex; justify-content: space-between; align-items: center; padding: 20px 5%; background: rgba(8,15,26,0.8); backdrop-filter: blur(10px); position: fixed; width: 90%; z-index: 1000; }
-        .logo { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--accent); }
-        .hero { padding: 150px 5% 100px; text-align: center; background: radial-gradient(circle at center, #1e293b 0%, #080f1a 100%); }
-        h1 { font-family: 'Syne', sans-serif; font-size: clamp(2.5rem, 6vw, 4rem); margin-bottom: 20px; }
-        .btn-primary { background: var(--accent); color: white; padding: 15px 35px; border-radius: 12px; font-weight: 700; text-decoration: none; display: inline-block; transition: 0.3s; }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(59,130,246,0.3); }
-        .pricing { padding: 100px 5%; text-align: center; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1100px; margin: 50px auto; }
-        .card { background: var(--card); padding: 40px; border-radius: 24px; border: 1px solid #1e293b; transition: 0.3s; }
-        .card.pro { border: 2px solid var(--accent); position: relative; transform: scale(1.05); }
-        .badge { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--accent); padding: 5px 20px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; }
-        ul { list-style: none; padding: 0; margin: 30px 0; text-align: left; color: var(--sub); }
-        li { margin-bottom: 12px; }
-        .check { color: #10b981; margin-right: 8px; }
-    </style>
-</head>
-<body>
-    <nav>
-        <div class="logo">VisaPath</div>
-        <a href="dashboard.html" class="btn-primary" style="padding: 10px 20px;">Dashboard'a Git</a>
-    </nav>
+<section id="pricing" class="pricing-section" style="padding: 100px 5%; background: #0a1422;">
+  <div style="text-align: center; margin-bottom: 60px;">
+    <h2 style="font-family: 'Syne', sans-serif; font-size: 3rem; margin-bottom: 20px;">Planlar</h2>
+    <p style="color: #94a3b8; font-size: 1.2rem;">Sana en uygun kariyer yolunu seç.</p>
+  </div>
 
-    <section class="hero">
-        <h1>Vize engelini kaldır,<br>dünyada çalışmaya başla.</h1>
-        <p style="color: var(--sub); font-size: 1.2rem; max-width: 600px; margin: 0 auto 40px;">Gerçek vize sponsoru şirketleri bul. AI destekli danışmanımızla başvuru süreçlerini yönet.</p>
-        <a href="dashboard.html" class="btn-primary">Ücretsiz Başla</a>
-    </section>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto;">
+    <div style="background: #111b2d; padding: 40px; border-radius: 24px; border: 1px solid #1e293b; text-align: center;">
+      <h3 style="font-size: 1.5rem; margin-bottom: 10px;">Ücretsiz</h3>
+      <div style="font-size: 2.5rem; font-weight: 800; margin-bottom: 20px;">$0 <span style="font-size: 1rem; color: #94a3b8;">/ay</span></div>
+      <ul style="text-align: left; list-style: none; margin-bottom: 30px; color: #94a3b8; line-height: 2;">
+        <li>✓ Günlük 3 AI Mesajı</li>
+        <li>✓ Temel İş Arama</li>
+        <li>✕ Maaş Detayları</li>
+        <li>✕ Vize Şans Analizi</li>
+      </ul>
+      <button style="width: 100%; padding: 15px; border-radius: 12px; background: transparent; border: 1px solid #3b82f6; color: #fff;">Mevcut Plan</button>
+    </div>
 
-    <section class="pricing">
-        <h2 style="font-family: 'Syne'; font-size: 2.5rem;">Planlar</h2>
-        <div class="grid">
-            <div class="card">
-                <h3>Ücretsiz</h3>
-                <div style="font-size: 2.5rem; font-weight: 800;">$0</div>
-                <ul>
-                    <li><span class="check">✓</span> Günlük 3 AI Sorusu</li>
-                    <li><span class="check">✓</span> Temel İş Arama</li>
-                    <li style="opacity: 0.5;">✕ Maaş Verileri</li>
-                </ul>
-                <a href="dashboard.html" style="color: var(--accent); font-weight: 700;">Hemen Başla →</a>
-            </div>
-            <div class="card pro">
-                <div class="badge">EN POPÜLER</div>
-                <h3>VisaPath Pro</h3>
-                <div style="font-size: 2.5rem; font-weight: 800;">$9.99</div>
-                <ul>
-                    <li><span class="check">✓</span> Sınırsız AI Danışman</li>
-                    <li><span class="check">✓</span> Tüm Maaş Verileri</li>
-                    <li><span class="check">✓</span> Vize Şans Analizi</li>
-                </ul>
-                <button class="btn-primary" style="width: 100%;">Pro'ya Geç</button>
-            </div>
-        </div>
-    </section>
-</body>
-</html>
+    <div style="background: #111b2d; padding: 40px; border-radius: 24px; border: 2px solid #3b82f6; text-align: center; position: relative;">
+      <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: #3b82f6; padding: 5px 20px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">EN POPÜLER</div>
+      <h3 style="font-size: 1.5rem; margin-bottom: 10px;">VisaPath Pro</h3>
+      <div style="font-size: 2.5rem; font-weight: 800; margin-bottom: 20px;">$9.99 <span style="font-size: 1rem; color: #94a3b8;">/ay</span></div>
+      <ul style="text-align: left; list-style: none; margin-bottom: 30px; color: #e2e8f0; line-height: 2;">
+        <li>✓ Sınırsız AI Mesajı</li>
+        <li>✓ Tüm Maaş Verileri</li>
+        <li>✓ Detaylı Vize Şans Analizi</li>
+        <li>✓ Şirket Yanıt Takibi</li>
+      </ul>
+      <button style="width: 100%; padding: 15px; border-radius: 12px; background: #3b82f6; color: #fff; font-weight: bold;">Pro'ya Geç</button>
+    </div>
+  </div>
+</section>
