@@ -685,6 +685,107 @@ h1 .grad{
 .empty svg{width:36px;height:36px;stroke:var(--border2);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;margin:0 auto 12px}
 .empty p{color:var(--text2);font-weight:500;margin-bottom:6px}
 .empty small{color:var(--text4);font-size:13px}
+
+/* ══ PREMIUM TOKENS ══ */
+:root{--gold:#f59e0b;--gold-lt:#fcd34d;--gold-dk:#d97706;--gold-glow:rgba(245,158,11,.35)}
+@keyframes goldShimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+@keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes proGlow{0%,100%{box-shadow:0 0 0 0 var(--gold-glow),0 24px 60px rgba(0,0,0,.5)}50%{box-shadow:0 0 40px 8px var(--gold-glow),0 24px 60px rgba(0,0,0,.5)}}
+@keyframes lockPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@keyframes modalIn{from{opacity:0;transform:scale(.93) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes overlayIn{from{opacity:0}to{opacity:1}}
+.card-info-locked{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text3);position:relative;cursor:pointer}
+.card-info-locked .blurred-val{filter:blur(4px);color:var(--text2);user-select:none;pointer-events:none;letter-spacing:.08em}
+.card-info-locked .lock-badge{display:inline-flex;align-items:center;gap:4px;flex-shrink:0}
+.card-info-locked .lock-badge svg{width:11px;height:11px;stroke:var(--gold);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;animation:lockPulse 2.4s ease-in-out infinite}
+.card-info-locked .lock-badge span{font-size:10px;font-weight:700;color:var(--gold);white-space:nowrap;letter-spacing:.03em}
+.card-info-locked:hover .lock-badge span{text-decoration:underline}
+.paywall-overlay{position:fixed;inset:0;z-index:9999;background:rgba(4,8,16,.9);backdrop-filter:blur(14px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.paywall-overlay.show{opacity:1;pointer-events:all}
+.paywall-modal{background:linear-gradient(145deg,#0b1727,#060d1a);border:1px solid rgba(245,158,11,.25);border-radius:26px;width:100%;max-width:430px;padding:36px 32px 32px;text-align:center;box-shadow:0 0 80px rgba(245,158,11,.1),0 40px 100px rgba(0,0,0,.8);animation:modalIn .32s cubic-bezier(.34,1.4,.64,1);position:relative;overflow:hidden}
+.paywall-modal::before{content:'';position:absolute;top:-1px;left:20%;right:20%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.paywall-modal::after{content:'';position:absolute;top:0;left:0;right:0;height:140px;background:radial-gradient(ellipse at 50% -20%,rgba(245,158,11,.09),transparent 70%);pointer-events:none}
+.paywall-icon{width:68px;height:68px;border-radius:20px;background:linear-gradient(135deg,rgba(245,158,11,.18),rgba(245,158,11,.05));border:1px solid rgba(245,158,11,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;box-shadow:0 8px 32px rgba(245,158,11,.18);animation:floatUp 3s ease-in-out infinite}
+.paywall-icon svg{width:30px;height:30px;stroke:var(--gold);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.paywall-limit-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#f87171;font-size:11px;font-weight:700;padding:5px 14px;border-radius:99px;margin-bottom:16px;letter-spacing:.04em}
+.paywall-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:10px;letter-spacing:-.3px}
+.paywall-sub{font-size:14px;color:var(--text3);line-height:1.65;margin-bottom:26px}
+.paywall-sub strong{color:var(--text2)}
+.paywall-perks{display:flex;flex-direction:column;gap:9px;background:rgba(255,255,255,.025);border:1px solid var(--border);border-radius:16px;padding:16px 18px;margin-bottom:24px;text-align:left}
+.paywall-perk{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text2)}
+.paywall-perk svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.paywall-cta{width:100%;padding:15px;border-radius:14px;background:linear-gradient(135deg,var(--gold),var(--gold-dk));color:#050200;font-size:15px;font-weight:900;border:none;cursor:pointer;box-shadow:0 8px 32px rgba(245,158,11,.4);transition:all .2s;letter-spacing:.02em;position:relative;overflow:hidden}
+.paywall-cta::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.14),transparent);background-size:200% 100%;animation:goldShimmer 2.5s linear infinite}
+.paywall-cta:hover{transform:translateY(-2px);box-shadow:0 14px 44px rgba(245,158,11,.55)}
+.paywall-dismiss{display:block;margin-top:14px;font-size:12px;color:var(--text4);cursor:pointer;transition:color .18s;background:none;border:none;width:100%}
+.paywall-dismiss:hover{color:var(--text3)}
+.paywall-price-note{font-size:12px;color:var(--text4);margin-top:10px}
+.paywall-price-note strong{color:var(--gold-lt)}
+.chat-limit-bar{padding:8px 14px;background:rgba(245,158,11,.05);border-top:1px solid rgba(245,158,11,.1);display:flex;align-items:center;gap:8px}
+.limit-track{flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.limit-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--gold-dk));transition:width .5s cubic-bezier(.4,0,.2,1)}
+.limit-text{font-size:10px;font-weight:700;color:var(--gold);white-space:nowrap}
+.chat-blocked{padding:18px 14px;background:linear-gradient(135deg,rgba(245,158,11,.07),rgba(245,158,11,.03));border-top:1px solid rgba(245,158,11,.18);text-align:center}
+.chat-blocked-icon{width:40px;height:40px;border-radius:12px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.chat-blocked-icon svg{width:18px;height:18px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.chat-blocked-title{font-size:13px;font-weight:700;color:var(--gold-lt);margin-bottom:4px}
+.chat-blocked-sub{font-size:11px;color:var(--text3);margin-bottom:12px;line-height:1.55}
+.btn-upgrade-chat{width:100%;padding:10px;border-radius:11px;background:linear-gradient(135deg,var(--gold),var(--gold-dk));color:#050200;font-size:13px;font-weight:800;border:none;cursor:pointer;transition:all .18s;box-shadow:0 4px 20px rgba(245,158,11,.3)}
+.btn-upgrade-chat:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(245,158,11,.45)}
+.pricing-section{padding:100px 24px 88px;position:relative;overflow:hidden;background:linear-gradient(to bottom,var(--bg),#040a12)}
+.pricing-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border2),transparent)}
+.pricing-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(245,158,11,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(245,158,11,.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none}
+.pricing-glow-l{position:absolute;top:20%;left:-8%;width:320px;height:320px;background:rgba(59,130,246,.04);border-radius:50%;filter:blur(90px);pointer-events:none}
+.pricing-glow-r{position:absolute;top:10%;right:-8%;width:400px;height:400px;background:rgba(245,158,11,.055);border-radius:50%;filter:blur(110px);pointer-events:none}
+.pricing-inner{max-width:960px;margin:0 auto;position:relative}
+.pricing-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;border-radius:99px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18);color:var(--gold-lt);font-size:11px;font-weight:700;margin-bottom:20px;letter-spacing:.08em;text-transform:uppercase}
+.pricing-eyebrow svg{width:11px;height:11px;stroke:var(--gold-lt);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pricing-headline{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,4vw,2.7rem);font-weight:800;color:var(--text);letter-spacing:-.5px;line-height:1.1;margin-bottom:12px}
+.pricing-headline .gold{background:linear-gradient(90deg,var(--gold),var(--gold-lt),var(--gold));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:goldShimmer 3s linear infinite}
+.pricing-sub{color:var(--text3);font-size:15px;line-height:1.65;max-width:460px;margin-bottom:52px}
+.pricing-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.price-card{border-radius:24px;padding:36px 30px;position:relative;overflow:hidden;transition:transform .22s}
+.price-card:hover{transform:translateY(-5px)}
+.price-card-free{background:var(--bg2);border:1px solid var(--border2)}
+.price-card-pro{background:linear-gradient(145deg,#11200a,#090f05);border:1px solid rgba(245,158,11,.28);animation:proGlow 4s ease-in-out infinite}
+.price-card-pro::before{content:'';position:absolute;top:-1px;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.price-card-pro::after{content:'';position:absolute;top:0;left:0;right:0;height:180px;background:radial-gradient(ellipse at 50% -30%,rgba(245,158,11,.1),transparent 70%);pointer-events:none}
+.pro-badge{position:absolute;top:22px;right:22px;display:flex;align-items:center;gap:5px;background:linear-gradient(135deg,var(--gold),var(--gold-dk));color:#050200;font-size:10px;font-weight:900;padding:4px 12px;border-radius:99px;letter-spacing:.07em;text-transform:uppercase;z-index:1}
+.pro-badge svg{width:9px;height:9px;fill:#050200;stroke:none}
+.plan-icon{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:22px}
+.plan-icon svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.plan-icon-free{background:rgba(59,130,246,.12);color:var(--blue-lt)}
+.plan-icon-pro{background:linear-gradient(135deg,rgba(245,158,11,.22),rgba(245,158,11,.07));color:var(--gold);border:1px solid rgba(245,158,11,.22);box-shadow:0 4px 20px rgba(245,158,11,.12)}
+.plan-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px}
+.plan-name-free{color:var(--text3)}
+.plan-name-pro{color:var(--gold-lt)}
+.plan-price{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;letter-spacing:-.5px;line-height:1;margin-bottom:4px}
+.plan-price-free{color:var(--text2)}
+.plan-price-pro{background:linear-gradient(135deg,var(--gold),var(--gold-lt));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.plan-period{font-size:14px;font-weight:400}
+.plan-desc{font-size:13px;color:var(--text3);margin:12px 0 28px;line-height:1.65}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:11px;margin-bottom:32px}
+.plan-feature{display:flex;align-items:flex-start;gap:10px;font-size:13px}
+.feature-check{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.feature-check svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.fc-free{background:rgba(100,116,139,.14);color:var(--text3)}
+.fc-pro{background:rgba(245,158,11,.14);color:var(--gold)}
+.feature-text-free{color:var(--text3)}
+.feature-text-pro{color:#d1d1a5}
+.feature-locked{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text4)}
+.feature-locked svg{width:13px;height:13px;stroke:var(--text4);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.btn-plan-free{width:100%;padding:13px;border-radius:13px;background:transparent;border:1px solid var(--border2);color:var(--text2);font-size:14px;font-weight:700;transition:all .18s}
+.btn-plan-free:hover{background:rgba(255,255,255,.04);border-color:#2e5f8a;color:var(--text)}
+.btn-plan-pro{width:100%;padding:13px;border-radius:13px;background:linear-gradient(135deg,var(--gold),#a16207);border:none;color:#050200;font-size:14px;font-weight:900;box-shadow:0 8px 28px rgba(245,158,11,.38);transition:all .2s;position:relative;overflow:hidden;letter-spacing:.02em}
+.btn-plan-pro::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.13),transparent);background-size:200% 100%;animation:goldShimmer 2.5s linear infinite}
+.btn-plan-pro:hover{transform:translateY(-2px);box-shadow:0 14px 44px rgba(245,158,11,.52)}
+.guarantee-strip{display:flex;align-items:center;justify-content:center;gap:32px;margin-top:52px;flex-wrap:wrap}
+.guarantee-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text3)}
+.guarantee-item svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.nav-plan-link{display:flex;align-items:center;gap:7px;padding:7px 14px;border-radius:10px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);color:var(--gold-lt);font-size:13px;font-weight:700;transition:all .18s}
+.nav-plan-link:hover{background:rgba(245,158,11,.14);border-color:rgba(245,158,11,.4)}
+.nav-plan-link svg{width:10px;height:10px;fill:var(--gold);stroke:none}
+@media(max-width:680px){.pricing-cards{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -717,7 +818,7 @@ h1 .grad{
     </div>
 
     <div class="nav-right">
-      <button class="btn-ghost">Giriş Yap</button>
+      <a href="#pricing" class="nav-plan-link"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Pro'ya Geç</a><button class="btn-ghost">Giriş Yap</button>
       <button class="btn-primary">
         İlan Ver
         <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -920,6 +1021,10 @@ h1 .grad{
     <div class="msg msg-ai">Merhaba! 👋 Vize süreciniz hakkında sorularınızı yanıtlamaya hazırım. Hangi ülke için başvuru düşünüyorsunuz?</div>
   </div>
 
+  <div class="chat-limit-bar">
+    <div class="limit-track"><div class="limit-fill" id="limitFill" style="width:0%"></div></div>
+    <span class="limit-text" id="limitText">3 ücretsiz mesaj kaldı</span>
+  </div>
   <div class="chat-quick">
     <button class="quick-chip" onclick="sendQuick('Almanya Blue Card?')">Almanya Blue Card?</button>
     <button class="quick-chip" onclick="sendQuick('Süreç ne kadar sürer?')">Süreç kaç hafta?</button>
@@ -1071,8 +1176,15 @@ function buildJobCard(job){
           <span class="card-info-item info-blue">
             ${iconSVG('brief')} ${job.type}
           </span>
-          <span class="card-info-item info-green">
-            ${iconSVG('trend')} ${job.salary}
+          <span class="card-info-locked" onclick="showPaywall('salary')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green-lt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            <span class="blurred-val">${job.salary}</span>
+            <span class="lock-badge"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Pro ile Gör</span></span>
+          </span>
+          <span class="card-info-locked" style="margin-left:4px" onclick="showPaywall('visa_rate')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span class="blurred-val">%${job.sponsorCount>80?92:job.sponsorCount>50?78:65} Onay</span>
+            <span class="lock-badge"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Pro ile Gör</span></span>
           </span>
         </div>
 
@@ -1166,8 +1278,44 @@ const AI_REPLIES = [
   "İngiltere Skilled Worker vizesi için işverenin sponsor lisansında olması gerekiyor — tüm VisaPath şirketleri bu listededir. ✅",
   "Kanada Express Entry puanınızı hesaplamak ister misiniz? Dil puanı, yaş ve deneyim etkiliyor.",
 ];
+const FREE_MSG_LIMIT = 3;
 let aiIdx = 0;
 let chatOpen = false;
+let userMsgCount = 0;
+let chatBlocked = false;
+
+function updateLimitBar(){
+  const pct = Math.min((userMsgCount/FREE_MSG_LIMIT)*100,100);
+  const fill = document.getElementById('limitFill');
+  const txt  = document.getElementById('limitText');
+  if(fill) fill.style.width = pct+'%';
+  if(txt){
+    const rem = Math.max(FREE_MSG_LIMIT-userMsgCount,0);
+    txt.textContent = rem > 0 ? rem+' ücretsiz mesaj kaldı' : 'Limit doldu';
+    if(rem===0) txt.style.color='#f87171';
+  }
+}
+
+function blockChat(){
+  chatBlocked = true;
+  const inputRow = document.querySelector('.chat-input-row');
+  const quickRow = document.querySelector('.chat-quick');
+  if(inputRow) inputRow.style.display='none';
+  if(quickRow) quickRow.style.display='none';
+  const panel = document.getElementById('chatPanel');
+  const limitBar = panel.querySelector('.chat-limit-bar');
+  if(limitBar) limitBar.remove();
+  const blocked = document.createElement('div');
+  blocked.className = 'chat-blocked';
+  blocked.innerHTML = `
+    <div class="chat-blocked-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+    <div class="chat-blocked-title">Günlük ücretsiz limitin doldu</div>
+    <div class="chat-blocked-sub">AI Danışman ile <strong style="color:var(--text2)">günde 3 mesaj</strong> ücretsiz. Devam etmek için Pro planına geç.</div>
+    <button class="btn-upgrade-chat" onclick="showPaywall('chat')">Pro ile Devam Et — $9.99/ay</button>
+  `;
+  panel.appendChild(blocked);
+}
+
 function toggleChat(){ chatOpen=!chatOpen; document.getElementById('chatPanel').classList.toggle('open',chatOpen); }
 function openChat(){ chatOpen=true; document.getElementById('chatPanel').classList.add('open'); }
 function addMsg(text,role){
@@ -1179,13 +1327,57 @@ function addMsg(text,role){
   box.scrollTop = box.scrollHeight;
 }
 function sendMsg(text){
-  if(!text.trim())return;
+  if(!text.trim()) return;
+  if(chatBlocked){ showPaywall('chat'); return; }
   addMsg(text,'user');
   document.getElementById('chatInput').value='';
-  setTimeout(()=>{addMsg(AI_REPLIES[aiIdx%AI_REPLIES.length],'ai');aiIdx++;},700);
+  userMsgCount++;
+  updateLimitBar();
+  if(userMsgCount>=FREE_MSG_LIMIT){
+    setTimeout(()=>{
+      addMsg(AI_REPLIES[aiIdx%AI_REPLIES.length],'ai');
+      aiIdx++;
+      setTimeout(blockChat, 600);
+    },700);
+  } else {
+    setTimeout(()=>{addMsg(AI_REPLIES[aiIdx%AI_REPLIES.length],'ai');aiIdx++;},700);
+  }
 }
 function sendChat(){ sendMsg(document.getElementById('chatInput').value); }
 function sendQuick(text){ openChat(); sendMsg(text); }
+
+/* ─ PAYWALL ─ */
+const PAYWALL_COPY = {
+  chat:{
+    badge:'● Günlük limit doldu',
+    title:'AI Danışman limitine ulaştın',
+    sub:'<strong>3 ücretsiz mesaj</strong> hakkın bitti. Sınırsız erişim için Pro planına geç.'
+  },
+  salary:{
+    badge:'● Pro içeriği',
+    title:'Maaş verisi Pro üyelere açık',
+    sub:'Bu pozisyonun tam maaş aralığını ve <strong>Vize Onay Oranını</strong> görmek için Pro'ya geç.'
+  },
+  visa_rate:{
+    badge:'● Pro içeriği',
+    title:'Vize Onay Oranı gizli',
+    sub:'Bu şirketin vize onay istatistiklerini ve <strong>Vize Şans Analizini</strong> görmek için Pro'ya geç.'
+  },
+  pricing:{
+    badge:'✦ Pro Plan',
+    title:'Pro ile her kapı açık',
+    sub:'Sınırsız ilan, AI danışman, maaş verileri ve daha fazlası sadece <strong>$9.99/ay</strong>.'
+  }
+};
+function showPaywall(type='chat'){
+  const c = PAYWALL_COPY[type]||PAYWALL_COPY.chat;
+  document.getElementById('paywallBadge').textContent = c.badge;
+  document.getElementById('paywallTitle').textContent = c.title;
+  document.getElementById('paywallSub').innerHTML = c.sub;
+  document.getElementById('paywallOverlay').classList.add('show');
+}
+function hidePaywall(){ document.getElementById('paywallOverlay').classList.remove('show'); }
+function hidePaywallOnBg(e){ if(e.target===document.getElementById('paywallOverlay')) hidePaywall(); }
 document.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&document.activeElement.id==='chatInput') sendChat();
   if(e.key==='Enter'&&document.activeElement.id==='searchPos') filterJobs();
@@ -1195,5 +1387,119 @@ document.addEventListener('keydown',e=>{
 buildSidebar();
 renderJobs();
 </script>
+
+<!-- ── PRICING SECTION ── -->
+<section class="pricing-section" id="pricing">
+  <div class="pricing-grid-bg"></div>
+  <div class="pricing-glow-l"></div>
+  <div class="pricing-glow-r"></div>
+  <div class="pricing-inner">
+    <div class="pricing-eyebrow">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Planlar
+    </div>
+    <h2 class="pricing-headline">Vize yolculuğuna<br><span class="gold">doğru araçlarla</span> başla</h2>
+    <p class="pricing-sub">Ücretsiz başla, istediğinde Pro'ya geç. Her iki plan da vize sponsorlu şirketlere erişim sağlar.</p>
+
+    <div class="pricing-cards">
+      <!-- FREE -->
+      <div class="price-card price-card-free">
+        <div class="plan-icon plan-icon-free">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        </div>
+        <div class="plan-name plan-name-free">Free</div>
+        <div class="plan-price plan-price-free">$0<span class="plan-period"> / ay</span></div>
+        <p class="plan-desc">Temel arama ve ilan görüntüleme. Sınırlı erişimle başlayın.</p>
+        <ul class="plan-features">
+          <li class="plan-feature"><div class="feature-check fc-free"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-free">Günde <strong style="color:var(--text2)">10</strong> ilan görüntüleme</span></li>
+          <li class="plan-feature"><div class="feature-check fc-free"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-free">Temel sektör filtreleri</span></li>
+          <li class="plan-feature"><div class="feature-check fc-free"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-free">AI Danışman — günde <strong style="color:var(--text2)">3 mesaj</strong></span></li>
+          <li class="plan-feature"><div class="feature-check fc-free"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-free">Temel şirket bilgisi</span></li>
+          <li class="plan-feature">
+            <div class="feature-locked"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Maaş verileri gizli</span></div>
+          </li>
+          <li class="plan-feature">
+            <div class="feature-locked"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Vize Şans Analizi</span></div>
+          </li>
+          <li class="plan-feature">
+            <div class="feature-locked"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Başvuru Takip Paneli</span></div>
+          </li>
+        </ul>
+        <button class="btn-plan-free">Ücretsiz Başla</button>
+      </div>
+
+      <!-- PRO -->
+      <div class="price-card price-card-pro">
+        <div class="pro-badge"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>En Popüler</div>
+        <div class="plan-icon plan-icon-pro">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="plan-name plan-name-pro">Pro</div>
+        <div class="plan-price plan-price-pro">$9.99<span class="plan-period" style="color:var(--gold-lt);opacity:.7"> / ay</span></div>
+        <p class="plan-desc" style="color:#9a9a60">Sınırsız erişim. AI destekli analiz. Hızlı vize yolculuğu.</p>
+        <ul class="plan-features">
+          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro"><strong style="color:var(--gold-lt)">Sınırsız</strong> ilan görüntüleme</span></li>
+          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">Tüm filtreler + gelişmiş arama</span></li>
+          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">AI Danışman — <strong style="color:var(--gold-lt)">sınırsız</strong> mesaj</span></li>
+          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro"><strong style="color:var(--gold-lt)">Maaş verileri</strong> tam görünür</span></li>
+          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro"><strong style="color:var(--gold-lt)">Vize Şans Analizi</strong> — profiline göre % hesapla</span></li>
+          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">Başvuru Takip Paneli + belge yönetimi</span></li>
+          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">Öncelikli destek &amp; yeni özellik erişimi</span></li>
+        </ul>
+        <button class="btn-plan-pro" onclick="showPaywall('pricing')">Pro'ya Geç — $9.99/ay</button>
+        <p class="plan-desc" style="margin:12px 0 0;font-size:11px;text-align:center;color:var(--text4)">Kredi kartı gerekli değil · İstediğin zaman iptal et</p>
+      </div>
+    </div>
+
+    <!-- Guarantees -->
+    <div class="guarantee-strip">
+      <div class="guarantee-item">
+        <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        SSL şifreli güvenli ödeme
+      </div>
+      <div class="guarantee-item">
+        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        30 gün para iade garantisi
+      </div>
+      <div class="guarantee-item">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+        Her ay yeni özellikler
+      </div>
+      <div class="guarantee-item">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        24sa içinde aktif
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PAYWALL MODAL ── -->
+<div class="paywall-overlay" id="paywallOverlay" onclick="hidePaywallOnBg(event)">
+  <div class="paywall-modal">
+    <div class="paywall-icon">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <div class="paywall-limit-badge" id="paywallBadge">● Ücretsiz limit doldu</div>
+    <h3 class="paywall-title" id="paywallTitle">Günlük limitine ulaştın</h3>
+    <p class="paywall-sub" id="paywallSub">AI Vize Danışmanı ile <strong>günde 3 ücretsiz mesaj</strong> hakkın var. Devam etmek için Pro planına geç.</p>
+    <div class="paywall-perks">
+      <div class="paywall-perk">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Sınırsız AI Danışman mesajı
+      </div>
+      <div class="paywall-perk">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Maaş verileri ve Vize Şans Analizi
+      </div>
+      <div class="paywall-perk">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Sınırsız ilan görüntüleme
+      </div>
+    </div>
+    <button class="paywall-cta" onclick="hidePaywall()">Pro'ya Geç — $9.99/ay</button>
+    <p class="paywall-price-note">Sadece <strong>$9.99/ay</strong> · İstediğin zaman iptal et</p>
+    <button class="paywall-dismiss" onclick="hidePaywall()">Şimdi değil, ücretsiz devam et</button>
+  </div>
+</div>
 </body>
 </html>
