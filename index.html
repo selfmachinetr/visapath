@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>VisaPath Preview</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*{font-family:'DM Sans',sans-serif;box-sizing:border-box;margin:0;padding:0}
+body{background:#080f1a}
+.font-display{font-family:'Syne',sans-serif}
+::-webkit-scrollbar{width:5px;background:#080f1a}
+::-webkit-scrollbar-thumb{background:#1e3a5f;border-radius:3px}
+@keyframes glow-pulse{0%,100%{box-shadow:0 0 0 0 rgba(59,130,246,.3)}50%{box-shadow:0 0 18px 5px rgba(59,130,246,.18)}}
+@keyframes badge-glow{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.25)}50%{box-shadow:0 0 12px 4px rgba(16,185,129,.18)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pip{0%,100%{transform:scale(1)}50%{transform:scale(1.4)}}
+.anim-1{animation:fadeUp .5s .05s ease both}
+.anim-2{animation:fadeUp .5s .15s ease both}
+.anim-3{animation:fadeUp .5s .25s ease both}
+.anim-4{animation:fadeUp .5s .35s ease both}
+.badge-animate{animation:badge-glow 2.5s ease-in-out infinite}
+.glow-btn{animation:glow-pulse 3s ease-in-out infinite}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useRef } = React;
+const {
+  Search,MapPin,Briefcase,ChevronDown,SlidersHorizontal,
+  BadgeCheck,Building2,Globe,Zap,Shield,Star,
+  TrendingUp,Users,Clock,ArrowRight,Sparkles,
+  Code2,HeartPulse,Cpu,FlaskConical,Scale,BarChart3,
+  GraduationCap,Plane,Menu,X,Bot,ExternalLink
+} = lucideReact;
+
+const SECTORS=[
+  {label:"Yazılım & IT",icon:Code2,count:3241},
+  {label:"Sağlık",icon:HeartPulse,count:1870},
+  {label:"Mühendislik",icon:Cpu,count:2104},
+  {label:"Ar-Ge / Bilim",icon:FlaskConical,count:987},
+  {label:"Hukuk",icon:Scale,count:412},
+  {label:"Finans",icon:BarChart3,count:1356},
+  {label:"Eğitim",icon:GraduationCap,count:634},
+  {label:"Lojistik",icon:Plane,count:745},
+];
+const VISA_TYPES=[
+  {label:"H-1B (ABD)",tag:"h1b"},
+  {label:"Skilled Worker (UK)",tag:"sw_uk"},
+  {label:"Blue Card (AB)",tag:"bc_eu"},
+  {label:"Express Entry (CA)",tag:"ee_ca"},
+  {label:"TSS 482 (AU)",tag:"tss_au"},
+  {label:"EP (Singapur)",tag:"ep_sg"},
+];
+const JOBS=[
+  {id:1,title:"Senior Full-Stack Engineer",company:"Shopify Inc.",logo:"SH",logoColor:"#96BF48",logoBg:"#1a2a0a",location:"Ottawa, Kanada",sector:"Yazılım & IT",type:"Tam Zamanlı · Remote",salary:"$140K – $180K",visa:"Express Entry",visaColor:"#3b82f6",sponsorCount:47,posted:"2 gün önce",tags:["React","Node.js","GraphQL"],featured:true},
+  {id:2,title:"Machine Learning Scientist",company:"DeepMind",logo:"DM",logoColor:"#818cf8",logoBg:"#1a1a2e",location:"Londra, İngiltere",sector:"Yazılım & IT",type:"Tam Zamanlı · Hibrit",salary:"£120K – £160K",visa:"Skilled Worker",visaColor:"#a78bfa",sponsorCount:89,posted:"1 gün önce",tags:["Python","PyTorch","Research"],featured:true},
+  {id:3,title:"Kardiyoloji Uzmanı",company:"Mayo Clinic",logo:"MC",logoColor:"#f43f5e",logoBg:"#2a0a14",location:"Rochester, ABD",sector:"Sağlık",type:"Tam Zamanlı · Ofis",salary:"$300K – $420K",visa:"H-1B",visaColor:"#fb923c",sponsorCount:134,posted:"4 gün önce",tags:["MD","Board Certified","ACLS"],featured:false},
+  {id:4,title:"Aerospace Structures Engineer",company:"Airbus SE",logo:"AB",logoColor:"#38bdf8",logoBg:"#0a1a2a",location:"Hamburg, Almanya",sector:"Mühendislik",type:"Tam Zamanlı · Ofis",salary:"€85K – €110K",visa:"EU Blue Card",visaColor:"#2563eb",sponsorCount:61,posted:"Bugün",tags:["CATIA","FEA","Composites"],featured:false},
+  {id:5,title:"Cybersecurity Architect",company:"Palantir Technologies",logo:"PT",logoColor:"#22d3ee",logoBg:"#0a1e22",location:"New York, ABD",sector:"Yazılım & IT",type:"Tam Zamanlı · Ofis",salary:"$160K – $200K",visa:"H-1B",visaColor:"#fb923c",sponsorCount:28,posted:"3 gün önce",tags:["Zero Trust","SIEM","Cloud"],featured:false},
+  {id:6,title:"Biomedical Research Scientist",company:"Roche Holding AG",logo:"RO",logoColor:"#34d399",logoBg:"#0a1f16",location:"Basel, İsviçre",sector:"Ar-Ge / Bilim",type:"Tam Zamanlı · Ofis",salary:"CHF 110K – 140K",visa:"EU Blue Card",visaColor:"#2563eb",sponsorCount:72,posted:"5 gün önce",tags:["CRISPR","Cell Biology","GMP"],featured:false},
+];
+
+function VerifiedBadge({sponsorCount}){
+  const [hovered,setHovered]=useState(false);
+  return(
+    <div className="relative flex-shrink-0">
+      <button
+        onMouseEnter={()=>setHovered(true)}
+        onMouseLeave={()=>setHovered(false)}
+        className="badge-animate flex items-center gap-2 px-3 py-2 rounded-xl border border-emerald-500/40 bg-emerald-500/10 text-emerald-400 text-sm font-bold tracking-wide cursor-default select-none"
+        style={{transition:"all .2s"}}
+      >
+        <BadgeCheck size={16} className="text-emerald-400"/>
+        <span>Verified Sponsor</span>
+      </button>
+      <div style={{
+        position:"absolute",right:0,top:"52px",zIndex:50,
+        width:"260px",borderRadius:"16px",
+        background:"#0d1b2e",border:"1px solid #1e3a5f",
+        padding:"16px",boxShadow:"0 24px 64px rgba(0,0,0,.7)",
+        opacity:hovered?1:0,
+        transform:hovered?"translateY(0)":"translateY(-8px)",
+        pointerEvents:"none",
+        transition:"all .25s ease",
+      }}>
+        <div style={{display:"flex",alignItems:"center",gap:"10px",marginBottom:"12px"}}>
+          <div style={{width:"32px",height:"32px",borderRadius:"10px",background:"rgba(16,185,129,.15)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <Shield size={14} style={{color:"#10b981"}}/>
+          </div>
+          <div>
+            <p style={{color:"#fff",fontSize:"12px",fontWeight:700}}>Doğrulanmış Sponsor</p>
+            <p style={{color:"#64748b",fontSize:"10px"}}>VisaPath tarafından onaylandı</p>
+          </div>
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:"12px",background:"#0a1525",borderRadius:"12px",padding:"12px",border:"1px solid #1e3a5f"}}>
+          <div style={{textAlign:"center"}}>
+            <p style={{color:"#10b981",fontSize:"28px",fontWeight:900,lineHeight:1}}>{sponsorCount}</p>
+            <p style={{color:"#64748b",fontSize:"9px",fontWeight:700,textTransform:"uppercase",letterSpacing:".1em",marginTop:"4px"}}>sponsored</p>
+          </div>
+          <div style={{width:"1px",height:"36px",background:"#1e3a5f"}}/>
+          <p style={{color:"#cbd5e1",fontSize:"11px",lineHeight:1.6}}>
+            Bu şirket son 12 ayda <strong style={{color:"#fff"}}>{sponsorCount}</strong> çalışana vize sponsorluğu sağladı.
+          </p>
+        </div>
+        <div style={{marginTop:"8px",display:"flex",alignItems:"center",gap:"6px",fontSize:"10px",color:"#64748b"}}>
+          <Star size={9} style={{color:"#f59e0b",fill:"#f59e0b"}}/>
+          Yüksek onay oranı · Hızlı süreç
+        </div>
+        <div style={{position:"absolute",top:"-6px",right:"20px",width:"12px",height:"12px",transform:"rotate(45deg)",background:"#0d1b2e",borderTop:"1px solid #1e3a5f",borderLeft:"1px solid #1e3a5f"}}/>
+      </div>
+    </div>
+  );
+}
+
+function JobCard({job}){
+  return(
+    <div style={{
+      display:"flex",gap:"20px",padding:"20px",borderRadius:"18px",
+      background:job.featured?"linear-gradient(135deg,#0d1e35,#091525)":"#0b1727",
+      border:job.featured?"1px solid #1e4a7f":"1px solid #1a2d45",
+      transition:"all .25s",cursor:"pointer",
+      position:"relative",overflow:"hidden",
+    }}
+    onMouseEnter={e=>{e.currentTarget.style.borderColor="#3b82f6";e.currentTarget.style.boxShadow="0 20px 48px rgba(59,130,246,.12)";e.currentTarget.style.transform="translateY(-1px)"}}
+    onMouseLeave={e=>{e.currentTarget.style.borderColor=job.featured?"#1e4a7f":"#1a2d45";e.currentTarget.style.boxShadow="none";e.currentTarget.style.transform="translateY(0)"}}
+    >
+      {job.featured&&<div style={{position:"absolute",top:0,left:"20px",right:"20px",height:"1px",background:"linear-gradient(90deg,transparent,rgba(59,130,246,.6),transparent)"}}/>}
+      
+      <div style={{
+        flexShrink:0,width:"56px",height:"56px",borderRadius:"16px",
+        display:"flex",alignItems:"center",justifyContent:"center",
+        fontSize:"15px",fontWeight:900,letterSpacing:"-1px",
+        background:job.logoBg,color:job.logoColor,
+        border:"1px solid rgba(255,255,255,.05)",
+        boxShadow:"0 4px 16px rgba(0,0,0,.3)"
+      }}>
+        {job.logo}
+      </div>
+
+      <div style={{flex:1,minWidth:0}}>
+        <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:"16px",flexWrap:"wrap"}}>
+          <div>
+            <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"3px"}}>
+              {job.featured&&(
+                <span style={{display:"inline-flex",alignItems:"center",gap:"4px",fontSize:"10px",fontWeight:700,color:"#fbbf24",background:"rgba(251,191,36,.1)",border:"1px solid rgba(251,191,36,.2)",padding:"2px 8px",borderRadius:"99px",textTransform:"uppercase",letterSpacing:".07em"}}>
+                  <Sparkles size={8}/>Öne Çıkan
+                </span>
+              )}
+              <span style={{fontSize:"10px",fontWeight:500,color:"#4b6280"}}>{job.posted}</span>
+            </div>
+            <h3 style={{color:"#f1f5f9",fontWeight:700,fontSize:"17px",lineHeight:1.25,transition:"color .2s"}}>{job.title}</h3>
+            <div style={{display:"flex",alignItems:"center",gap:"6px",marginTop:"4px"}}>
+              <Building2 size={12} style={{color:"#4b6280"}}/>
+              <span style={{color:"#94a3b8",fontSize:"14px",fontWeight:600}}>{job.company}</span>
+            </div>
+          </div>
+          <VerifiedBadge sponsorCount={job.sponsorCount}/>
+        </div>
+
+        <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:"16px",marginTop:"12px"}}>
+          <span style={{display:"flex",alignItems:"center",gap:"6px",color:"#94a3b8",fontSize:"12px"}}>
+            <MapPin size={12} style={{color:"#60a5fa"}}/>{job.location}
+          </span>
+          <span style={{display:"flex",alignItems:"center",gap:"6px",color:"#94a3b8",fontSize:"12px"}}>
+            <Briefcase size={12} style={{color:"#60a5fa"}}/>{job.type}
+          </span>
+          <span style={{display:"flex",alignItems:"center",gap:"6px",color:"#94a3b8",fontSize:"12px"}}>
+            <TrendingUp size={12} style={{color:"#34d399"}}/>{job.salary}
+          </span>
+        </div>
+
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px",marginTop:"12px"}}>
+          <div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>
+            {job.tags.map(t=>(
+              <span key={t} style={{fontSize:"11px",fontWeight:500,color:"#64748b",background:"#0a1525",border:"1px solid #1a2d45",padding:"3px 10px",borderRadius:"8px"}}>{t}</span>
+            ))}
+          </div>
+          <span style={{
+            display:"flex",alignItems:"center",gap:"6px",
+            fontSize:"11px",fontWeight:700,padding:"4px 12px",borderRadius:"99px",
+            color:job.visaColor,
+            border:`1px solid ${job.visaColor}55`,
+            background:`${job.visaColor}15`,
+          }}>
+            <Globe size={11}/>{job.visa}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function App(){
+  const [mobileMenuOpen,setMobileMenuOpen]=useState(false);
+  const [selectedSectors,setSelectedSectors]=useState([]);
+  const [selectedVisas,setSelectedVisas]=useState([]);
+  const [searchPos,setSearchPos]=useState("");
+  const [searchCity,setSearchCity]=useState("");
+  const [searchSector,setSearchSector]=useState("");
+  const [chatOpen,setChatOpen]=useState(false);
+  const [msgs,setMsgs]=useState([{from:"ai",text:"Merhaba! 👋 Vize süreciniz hakkında sorularınızı yanıtlamaya hazırım. Hangi ülke için başvuru yapmayı düşünüyorsunuz?"}]);
+  const [inputVal,setInputVal]=useState("");
+
+  const aiReplies=["Almanya Blue Card için en az 3 yıl deneyim ve lisans diploması gerekiyor. 🎓","Başvuru sürecinizi birlikte adım adım planlayabilirim! Hangi adımdan başlamak istersiniz?","İşveren teklif aldıktan sonra ortalama 4-6 haftada vize onaylanıyor. ✅","İngiltere Skilled Worker vizesi için puan hesabı yapayım mı?"];
+  let aiIdx=0;
+
+  const sendMsg=(text)=>{
+    if(!text.trim())return;
+    setMsgs(p=>[...p,{from:"user",text}]);
+    setInputVal("");
+    setTimeout(()=>{
+      setMsgs(p=>[...p,{from:"ai",text:aiReplies[aiIdx%aiReplies.length]}]);
+      aiIdx++;
+    },700);
+  };
+
+  const toggleSector=(label)=>setSelectedSectors(p=>p.includes(label)?p.filter(x=>x!==label):[...p,label]);
+  const toggleVisa=(tag)=>setSelectedVisas(p=>p.includes(tag)?p.filter(x=>x!==tag):[...p,tag]);
+
+  const filteredJobs=JOBS.filter(j=>{
+    const matchSector=selectedSectors.length===0||selectedSectors.includes(j.sector);
+    const matchPos=!searchPos||j.title.toLowerCase().includes(searchPos.toLowerCase());
+    return matchSector&&matchPos;
+  });
+
+  return(
+    <div style={{minHeight:"100vh",background:"#080f1a",fontFamily:"'DM Sans',sans-serif"}}>
+
+      {/* NAV */}
+      <nav style={{position:"fixed",top:0,left:0,right:0,zIndex:100,borderBottom:"1px solid #0f2035",background:"rgba(8,15,26,.9)",backdropFilter:"blur(20px)"}}>
+        <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 20px",height:"64px",display:"flex",alignItems:"center",justifyContent:"space-between"}}>
+          <a href="#" style={{display:"flex",alignItems:"center",gap:"10px",textDecoration:"none"}}>
+            <div style={{width:"32px",height:"32px",borderRadius:"10px",background:"#3b82f6",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 4px 16px rgba(59,130,246,.5)"}}>
+              <Globe size={15} style={{color:"#fff"}}/>
+            </div>
+            <span style={{fontFamily:"'Syne',sans-serif",color:"#fff",fontSize:"20px",fontWeight:800,letterSpacing:"-0.5px"}}>
+              Visa<span style={{color:"#60a5fa"}}>Path</span>
+            </span>
+          </a>
+
+          <div style={{display:"flex",alignItems:"center",gap:"4px"}}>
+            {[{l:"Sektörler",I:Briefcase},{l:"Şirketler",I:Building2}].map(({l,I})=>(
+              <button key={l} style={{display:"flex",alignItems:"center",gap:"8px",padding:"8px 16px",borderRadius:"12px",border:"none",background:"transparent",color:"#94a3b8",fontSize:"14px",fontWeight:500,cursor:"pointer",transition:"all .2s"}}
+                onMouseEnter={e=>{e.currentTarget.style.background="rgba(255,255,255,.05)";e.currentTarget.style.color="#f1f5f9"}}
+                onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="#94a3b8"}}
+              ><I size={14}/>{l}</button>
+            ))}
+            <button style={{display:"flex",alignItems:"center",gap:"8px",padding:"8px 16px",borderRadius:"12px",border:"1px solid rgba(59,130,246,.3)",background:"rgba(59,130,246,.1)",color:"#93c5fd",fontSize:"14px",fontWeight:600,cursor:"pointer",marginLeft:"4px"}}>
+              <Bot size={14} style={{color:"#67e8f9"}}/> AI Vize Danışmanı
+              <span style={{width:"7px",height:"7px",borderRadius:"50%",background:"#10b981"}}/>
+            </button>
+            <div style={{marginLeft:"12px",display:"flex",alignItems:"center",gap:"10px"}}>
+              <button style={{color:"#94a3b8",background:"none",border:"none",fontSize:"14px",fontWeight:500,cursor:"pointer"}}>Giriş Yap</button>
+              <button style={{display:"flex",alignItems:"center",gap:"6px",padding:"8px 18px",borderRadius:"12px",background:"#3b82f6",color:"#fff",fontSize:"14px",fontWeight:700,border:"none",cursor:"pointer",boxShadow:"0 4px 16px rgba(59,130,246,.4)"}}>
+                İlan Ver <ArrowRight size={13}/>
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* HERO */}
+      <section style={{padding:"128px 20px 72px",position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",inset:0,backgroundImage:"linear-gradient(rgba(59,130,246,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(59,130,246,.04) 1px,transparent 1px)",backgroundSize:"56px 56px",pointerEvents:"none"}}/>
+        <div style={{position:"absolute",top:0,left:"50%",transform:"translateX(-50%)",width:"700px",height:"400px",background:"rgba(59,130,246,.08)",borderRadius:"50%",filter:"blur(120px)",pointerEvents:"none"}}/>
+        
+        <div style={{maxWidth:"900px",margin:"0 auto",textAlign:"center",position:"relative"}}>
+          <div className="anim-1" style={{display:"inline-flex",alignItems:"center",gap:"8px",padding:"8px 18px",borderRadius:"99px",background:"#0d1b2e",border:"1px solid #1e3a5f",color:"#93c5fd",fontSize:"12px",fontWeight:600,marginBottom:"24px"}}>
+            <Zap size={11} style={{color:"#fbbf24"}}/> 12.400+ Vize Sponsorlu Pozisyon · 48 Ülke
+          </div>
+
+          <h1 className="anim-2 font-display" style={{color:"#f8fafc",lineHeight:1.08,marginBottom:"20px",fontWeight:800,fontSize:"clamp(2.4rem,5.5vw,3.8rem)",fontFamily:"'Syne',sans-serif"}}>
+            Vize engelini kaldır,<br/>
+            <span style={{background:"linear-gradient(90deg,#60a5fa,#67e8f9,#3b82f6)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",backgroundClip:"text"}}>
+              dünyada çalışmaya başla.
+            </span>
+          </h1>
+
+          <p className="anim-3" style={{color:"#64748b",fontSize:"17px",maxWidth:"520px",margin:"0 auto 40px",lineHeight:1.7}}>
+            Gerçek vize sponsoru şirketleri bul. AI destekli danışmanımızla süreçlerini yönet.
+          </p>
+
+          {/* Search */}
+          <div className="anim-4" style={{background:"#0b1727",border:"1px solid #1a3050",borderRadius:"20px",padding:"12px",boxShadow:"0 32px 80px rgba(0,0,0,.6)",maxWidth:"860px",margin:"0 auto"}}>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"8px"}}>
+              {[
+                {label:"Pozisyon",Icon:Search,placeholder:"e.g. Software Engineer",val:searchPos,onChange:e=>setSearchPos(e.target.value)},
+                {label:"Şehir / Ülke",Icon:MapPin,placeholder:"e.g. Berlin, Almanya",val:searchCity,onChange:e=>setSearchCity(e.target.value)},
+              ].map(({label,Icon,placeholder,val,onChange})=>(
+                <div key={label} style={{display:"flex",alignItems:"center",gap:"12px",padding:"12px 16px",borderRadius:"14px",background:"#0a1525",border:"1px solid #1a2d45",transition:"border-color .2s"}}
+                  onFocusCapture={e=>e.currentTarget.style.borderColor="rgba(59,130,246,.6)"}
+                  onBlurCapture={e=>e.currentTarget.style.borderColor="#1a2d45"}
+                >
+                  <Icon size={15} style={{color:"#4b6280",flexShrink:0}}/>
+                  <div style={{minWidth:0}}>
+                    <div style={{fontSize:"9px",fontWeight:700,color:"#4b6280",textTransform:"uppercase",letterSpacing:".1em",marginBottom:"3px"}}>{label}</div>
+                    <input style={{width:"100%",background:"transparent",border:"none",outline:"none",color:"#f1f5f9",fontSize:"14px",fontWeight:500}} placeholder={placeholder} value={val} onChange={onChange}/>
+                  </div>
+                </div>
+              ))}
+              <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"12px 16px",borderRadius:"14px",background:"#0a1525",border:"1px solid #1a2d45"}}>
+                <Briefcase size={15} style={{color:"#4b6280",flexShrink:0}}/>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:"9px",fontWeight:700,color:"#4b6280",textTransform:"uppercase",letterSpacing:".1em",marginBottom:"3px"}}>Sektör</div>
+                  <select style={{width:"100%",background:"transparent",border:"none",outline:"none",color:searchSector?"#f1f5f9":"#4b6280",fontSize:"14px",fontWeight:500,cursor:"pointer",appearance:"none"}} value={searchSector} onChange={e=>setSearchSector(e.target.value)}>
+                    <option value="" style={{background:"#0a1525",color:"#94a3b8"}}>Tüm Sektörler</option>
+                    {SECTORS.map(s=><option key={s.label} value={s.label} style={{background:"#0a1525",color:"#fff"}}>{s.label}</option>)}
+                  </select>
+                </div>
+                <ChevronDown size={13} style={{color:"#4b6280",flexShrink:0}}/>
+              </div>
+            </div>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:"8px",flexWrap:"wrap",gap:"8px"}}>
+              <div style={{display:"flex",flexWrap:"wrap",gap:"6px"}}>
+                {["Remote","Mühendislik","Sağlık","EU Blue Card"].map(tag=>(
+                  <button key={tag} style={{fontSize:"11px",fontWeight:500,color:"#64748b",padding:"5px 12px",borderRadius:"10px",background:"transparent",border:"1px solid transparent",cursor:"pointer",transition:"all .2s"}}
+                    onMouseEnter={e=>{e.currentTarget.style.color="#93c5fd";e.currentTarget.style.background="rgba(59,130,246,.1)";e.currentTarget.style.borderColor="rgba(59,130,246,.2)"}}
+                    onMouseLeave={e=>{e.currentTarget.style.color="#64748b";e.currentTarget.style.background="transparent";e.currentTarget.style.borderColor="transparent"}}
+                  >{tag}</button>
+                ))}
+              </div>
+              <button style={{display:"flex",alignItems:"center",gap:"8px",padding:"10px 24px",borderRadius:"14px",background:"#3b82f6",color:"#fff",fontSize:"14px",fontWeight:700,border:"none",cursor:"pointer",boxShadow:"0 6px 20px rgba(59,130,246,.4)",transition:"all .2s"}}
+                onMouseEnter={e=>{e.currentTarget.style.background="#2563eb";e.currentTarget.style.boxShadow="0 8px 28px rgba(59,130,246,.55)"}}
+                onMouseLeave={e=>{e.currentTarget.style.background="#3b82f6";e.currentTarget.style.boxShadow="0 6px 20px rgba(59,130,246,.4)"}}
+              >
+                <Search size={14}/> Ara
+              </button>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"32px",marginTop:"28px",flexWrap:"wrap"}}>
+            {[
+              {I:Users,v:"48K+",l:"Aday"},
+              {I:Building2,v:"3.2K",l:"Sponsor Şirket"},
+              {I:BadgeCheck,v:"97%",l:"Vize Onayı"},
+              {I:Clock,v:"24sa",l:"Ort. Yanıt"},
+            ].map(({I,v,l})=>(
+              <div key={l} style={{display:"flex",alignItems:"center",gap:"8px"}}>
+                <I size={14} style={{color:"#60a5fa"}}/>
+                <span style={{color:"#fff",fontWeight:700,fontSize:"14px"}}>{v}</span>
+                <span style={{color:"#64748b",fontSize:"13px"}}>{l}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MAIN */}
+      <div style={{maxWidth:"1280px",margin:"0 auto",padding:"0 20px 96px",display:"flex",gap:"28px",alignItems:"flex-start"}}>
+        
+        {/* SIDEBAR */}
+        <aside style={{width:"256px",flexShrink:0,position:"sticky",top:"88px"}}>
+          <div style={{background:"#0b1727",border:"1px solid #1a2d45",borderRadius:"20px",overflow:"hidden"}}>
+            <div style={{padding:"16px 20px",borderBottom:"1px solid #1a2d45",display:"flex",alignItems:"center",gap:"8px"}}>
+              <SlidersHorizontal size={14} style={{color:"#60a5fa"}}/>
+              <span style={{color:"#f1f5f9",fontSize:"14px",fontWeight:700}}>Filtreler</span>
+              {(selectedSectors.length+selectedVisas.length)>0&&(
+                <span style={{marginLeft:"auto",fontSize:"10px",fontWeight:700,color:"#60a5fa",background:"rgba(96,165,250,.15)",padding:"2px 8px",borderRadius:"99px"}}>{selectedSectors.length+selectedVisas.length}</span>
+              )}
+            </div>
+
+            {/* Sectors */}
+            <div style={{padding:"16px",borderBottom:"1px solid #1a2d45"}}>
+              <p style={{fontSize:"9px",fontWeight:700,color:"#4b6280",textTransform:"uppercase",letterSpacing:".1em",marginBottom:"12px"}}>Sektörler</p>
+              <div style={{display:"flex",flexDirection:"column",gap:"4px"}}>
+                {SECTORS.map(({label,icon:Icon,count})=>{
+                  const active=selectedSectors.includes(label);
+                  return(
+                    <button key={label} onClick={()=>toggleSector(label)}
+                      style={{display:"flex",alignItems:"center",gap:"10px",padding:"8px 12px",borderRadius:"12px",border:`1px solid ${active?"rgba(59,130,246,.4)":"transparent"}`,background:active?"rgba(59,130,246,.15)":"transparent",color:active?"#93c5fd":"#94a3b8",fontSize:"12px",fontWeight:500,cursor:"pointer",transition:"all .2s",textAlign:"left"}}
+                      onMouseEnter={e=>{if(!active){e.currentTarget.style.background="rgba(255,255,255,.04)";e.currentTarget.style.color="#e2e8f0"}}}
+                      onMouseLeave={e=>{if(!active){e.currentTarget.style.background="transparent";e.currentTarget.style.color="#94a3b8"}}}
+                    >
+                      <Icon size={13} style={{color:active?"#60a5fa":"#4b6280",flexShrink:0}}/>
+                      <span style={{flex:1}}>{label}</span>
+                      <span style={{fontSize:"10px",fontWeight:700,padding:"2px 6px",borderRadius:"6px",background:active?"rgba(59,130,246,.2)":"#0a1525",color:active?"#93c5fd":"#4b6280"}}>{count.toLocaleString()}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Visa types */}
+            <div style={{padding:"16px"}}>
+              <p style={{fontSize:"9px",fontWeight:700,color:"#4b6280",textTransform:"uppercase",letterSpacing:".1em",marginBottom:"12px"}}>Vize Tipi</p>
+              <div style={{display:"flex",flexDirection:"column",gap:"4px"}}>
+                {VISA_TYPES.map(({label,tag})=>{
+                  const active=selectedVisas.includes(tag);
+                  return(
+                    <button key={tag} onClick={()=>toggleVisa(tag)}
+                      style={{display:"flex",alignItems:"center",gap:"10px",padding:"8px 12px",borderRadius:"12px",border:`1px solid ${active?"rgba(103,232,249,.3)":"transparent"}`,background:active?"rgba(103,232,249,.08)":"transparent",color:active?"#67e8f9":"#94a3b8",fontSize:"12px",fontWeight:500,cursor:"pointer",transition:"all .2s",textAlign:"left"}}
+                    >
+                      <Globe size={12} style={{color:active?"#67e8f9":"#4b6280",flexShrink:0}}/>
+                      <span style={{flex:1}}>{label}</span>
+                      {active&&<BadgeCheck size={12} style={{color:"#67e8f9"}}/>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {(selectedSectors.length+selectedVisas.length)>0&&(
+              <div style={{padding:"0 16px 16px"}}>
+                <button onClick={()=>{setSelectedSectors([]);setSelectedVisas([]);}}
+                  style={{width:"100%",padding:"8px",borderRadius:"12px",border:"1px solid #1a2d45",background:"transparent",color:"#64748b",fontSize:"12px",fontWeight:600,cursor:"pointer",transition:"all .2s"}}
+                  onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(239,68,68,.3)";e.currentTarget.style.color="#f87171";e.currentTarget.style.background="rgba(239,68,68,.05)"}}
+                  onMouseLeave={e=>{e.currentTarget.style.borderColor="#1a2d45";e.currentTarget.style.color="#64748b";e.currentTarget.style.background="transparent"}}
+                >Filtreleri Temizle</button>
+              </div>
+            )}
+          </div>
+
+          {/* AI CTA */}
+          <div style={{marginTop:"16px",padding:"20px",borderRadius:"20px",background:"linear-gradient(135deg,#0d1e35,#091525)",border:"1px solid rgba(59,130,246,.2)",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",top:0,right:0,width:"96px",height:"96px",background:"rgba(59,130,246,.08)",borderRadius:"50%",filter:"blur(24px)"}}/>
+            <div style={{width:"36px",height:"36px",borderRadius:"12px",background:"rgba(59,130,246,.2)",border:"1px solid rgba(59,130,246,.3)",display:"flex",alignItems:"center",justifyContent:"center",marginBottom:"12px"}}>
+              <Bot size={16} style={{color:"#60a5fa"}}/>
+            </div>
+            <p style={{color:"#fff",fontSize:"14px",fontWeight:700,marginBottom:"6px"}}>AI Vize Danışmanı</p>
+            <p style={{color:"#64748b",fontSize:"12px",lineHeight:1.6,marginBottom:"14px"}}>Vize sürecini AI ile yönet. Belge listesi, son tarihler ve daha fazlası.</p>
+            <button onClick={()=>setChatOpen(true)} style={{width:"100%",display:"flex",alignItems:"center",justifyContent:"center",gap:"8px",padding:"9px",borderRadius:"12px",background:"rgba(59,130,246,.7)",color:"#fff",fontSize:"12px",fontWeight:700,border:"none",cursor:"pointer",transition:"background .2s"}}
+              onMouseEnter={e=>e.currentTarget.style.background="#3b82f6"}
+              onMouseLeave={e=>e.currentTarget.style.background="rgba(59,130,246,.7)"}
+            >Danışmanı Başlat <ExternalLink size={11}/></button>
+          </div>
+        </aside>
+
+        {/* JOB LIST */}
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"20px",flexWrap:"wrap",gap:"12px"}}>
+            <div>
+              <span style={{color:"#f1f5f9",fontWeight:700,fontSize:"18px"}}>{filteredJobs.length}</span>
+              <span style={{color:"#64748b",fontSize:"14px",marginLeft:"8px"}}>pozisyon bulundu</span>
+              {selectedSectors.length>0&&<span style={{marginLeft:"8px",fontSize:"12px",color:"#60a5fa",fontWeight:500}}>· {selectedSectors.join(", ")}</span>}
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
+              <span style={{color:"#4b6280",fontSize:"12px"}}>Sırala:</span>
+              <select style={{background:"#0b1727",border:"1px solid #1a2d45",color:"#94a3b8",fontSize:"12px",fontWeight:500,padding:"6px 12px",borderRadius:"10px",outline:"none",cursor:"pointer"}}>
+                <option>En Yeni</option>
+                <option>En Fazla Sponsor</option>
+                <option>Maaş (Yüksek→Düşük)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{display:"flex",flexDirection:"column",gap:"12px"}}>
+            {filteredJobs.map(job=><JobCard key={job.id} job={job}/>)}
+            {filteredJobs.length===0&&(
+              <div style={{textAlign:"center",padding:"80px 0"}}>
+                <Search size={32} style={{color:"#1e3a5f",margin:"0 auto 12px"}}/>
+                <p style={{color:"#94a3b8",fontWeight:500}}>Sonuç bulunamadı</p>
+                <p style={{color:"#4b6280",fontSize:"13px",marginTop:"6px"}}>Filtreleri temizleyip tekrar deneyin</p>
+              </div>
+            )}
+          </div>
+
+          {filteredJobs.length>0&&(
+            <div style={{display:"flex",justifyContent:"center",marginTop:"28px"}}>
+              <button style={{display:"flex",alignItems:"center",gap:"8px",padding:"12px 28px",borderRadius:"14px",border:"1px solid #1a3050",background:"#0b1727",color:"#94a3b8",fontSize:"14px",fontWeight:600,cursor:"pointer",transition:"all .2s"}}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(59,130,246,.4)";e.currentTarget.style.color="#f1f5f9"}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor="#1a3050";e.currentTarget.style.color="#94a3b8"}}
+              >Daha Fazla Yükle <ChevronDown size={14}/></button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* CHAT BUTTON */}
+      <button className="glow-btn" onClick={()=>setChatOpen(!chatOpen)}
+        style={{position:"fixed",bottom:"24px",right:"24px",zIndex:200,width:"56px",height:"56px",borderRadius:"18px",background:"linear-gradient(135deg,#2563eb,#06b6d4)",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",boxShadow:"0 8px 32px rgba(59,130,246,.5)",transition:"transform .2s"}}
+        onMouseEnter={e=>e.currentTarget.style.transform="scale(1.08)"}
+        onMouseLeave={e=>e.currentTarget.style.transform="scale(1)"}
+      >
+        <Bot size={22} style={{color:"#fff"}}/>
+        <span style={{position:"absolute",top:"-4px",right:"-4px",width:"14px",height:"14px",borderRadius:"50%",background:"#10b981",border:"2px solid #080f1a"}}/>
+      </button>
+
+      {/* CHAT PANEL */}
+      {chatOpen&&(
+        <div style={{position:"fixed",bottom:"96px",right:"24px",zIndex:199,width:"340px",background:"#0b1727",border:"1px solid #1a3050",borderRadius:"20px",boxShadow:"0 32px 80px rgba(0,0,0,.7)",overflow:"hidden"}}>
+          <div style={{background:"linear-gradient(135deg,#0d1e35,#091525)",padding:"16px 18px",display:"flex",alignItems:"center",gap:"12px",borderBottom:"1px solid #1a2d45"}}>
+            <div style={{width:"36px",height:"36px",borderRadius:"12px",background:"linear-gradient(135deg,#2563eb,#06b6d4)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+              <Bot size={18} style={{color:"#fff"}}/>
+            </div>
+            <div>
+              <p style={{color:"#fff",fontWeight:700,fontSize:"14px"}}>AI Vize Danışmanı</p>
+              <p style={{color:"#10b981",fontSize:"11px",fontWeight:500}}>● Çevrimiçi · anında yanıt</p>
+            </div>
+            <button onClick={()=>setChatOpen(false)} style={{marginLeft:"auto",background:"none",border:"none",color:"#64748b",cursor:"pointer",fontSize:"18px",lineHeight:1}}>✕</button>
+          </div>
+          <div style={{padding:"14px",display:"flex",flexDirection:"column",gap:"10px",maxHeight:"260px",overflowY:"auto",background:"#080f1a"}}>
+            {msgs.map((m,i)=>(
+              <div key={i} style={{
+                maxWidth:"88%",padding:"10px 14px",borderRadius:m.from==="ai"?"14px 14px 14px 4px":"14px 14px 4px 14px",
+                fontSize:"13px",lineHeight:1.6,
+                background:m.from==="ai"?"#0b1727":"#2563eb",
+                border:m.from==="ai"?"1px solid #1a2d45":"none",
+                color:m.from==="ai"?"#e2e8f0":"#fff",
+                alignSelf:m.from==="ai"?"flex-start":"flex-end",
+              }}>{m.text}</div>
+            ))}
+          </div>
+          <div style={{padding:"10px 12px",background:"#0b1727",borderTop:"1px solid #1a2d45",display:"flex",flexWrap:"wrap",gap:"6px"}}>
+            {["Almanya Blue Card?","Süreç ne kadar sürer?","Belgeler?"].map(q=>(
+              <button key={q} onClick={()=>sendMsg(q)}
+                style={{fontSize:"11px",fontWeight:500,color:"#64748b",background:"#0a1525",border:"1px solid #1a2d45",padding:"5px 10px",borderRadius:"99px",cursor:"pointer",transition:"all .2s"}}
+                onMouseEnter={e=>{e.currentTarget.style.color="#93c5fd";e.currentTarget.style.borderColor="rgba(59,130,246,.3)"}}
+                onMouseLeave={e=>{e.currentTarget.style.color="#64748b";e.currentTarget.style.borderColor="#1a2d45"}}
+              >{q}</button>
+            ))}
+          </div>
+          <div style={{display:"flex",gap:"8px",padding:"10px 12px",background:"#0b1727",borderTop:"1px solid #0f2035"}}>
+            <input
+              value={inputVal} onChange={e=>setInputVal(e.target.value)}
+              onKeyDown={e=>{if(e.key==="Enter")sendMsg(inputVal)}}
+              placeholder="Sorunuzu yazın…"
+              style={{flex:1,background:"#0a1525",border:"1px solid #1a2d45",borderRadius:"10px",padding:"9px 14px",color:"#f1f5f9",fontSize:"13px",outline:"none",fontFamily:"'DM Sans',sans-serif"}}
+            />
+            <button onClick={()=>sendMsg(inputVal)}
+              style={{width:"36px",height:"36px",borderRadius:"10px",background:"#3b82f6",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"background .2s"}}
+              onMouseEnter={e=>e.currentTarget.style.background="#2563eb"}
+              onMouseLeave={e=>e.currentTarget.style.background="#3b82f6"}
+            ><ArrowRight size={15} style={{color:"#fff"}}/></button>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
