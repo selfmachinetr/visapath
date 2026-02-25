@@ -2,8 +2,17 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>VisaPath — Kontrol Paneli</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard — VisaPath Kontrol Paneli</title>
+
+<!-- ── SEO ── -->
+<meta name="description" content="VisaPath kullanıcı paneli. Başvuru takibi, vize süreci, şirket yanıtları ve belge yönetimi."/>
+<meta name="robots" content="noindex, nofollow"/>
+<link rel="canonical" href="https://visapath.app/dashboard"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="VisaPath Dashboard — Vize Başvuru Takibi"/>
+<meta property="og:description" content="Tüm başvurularını tek yerden yönet. Vize süreci takibi, AI danışman, belge yönetimi."/>
+<meta property="og:image" content="https://visapath.app/og-dashboard.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
@@ -842,6 +851,46 @@ input,select,textarea{font-family:'DM Sans',sans-serif}
   .main{margin-left:0}
   .app-row,.app-row-header{grid-template-columns:1fr auto}
   .app-location,.app-date{display:none}
+}
+
+/* ── DASHBOARD MOBILE ──────────────────────────── */
+.dash-mob-bar{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(8,15,26,.97);
+  border-top:1px solid var(--border2);
+  backdrop-filter:blur(20px);
+  padding:8px 16px env(safe-area-inset-bottom,8px);
+}
+.mob-tab-row{
+  display:flex;align-items:center;justify-content:space-around;
+}
+.mob-tab{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 12px;border-radius:10px;
+  background:none;border:none;cursor:pointer;
+  color:var(--text4);font-size:9px;font-weight:600;
+  letter-spacing:.04em;text-transform:uppercase;
+  transition:all .18s;flex:1;
+  position:relative;
+}
+.mob-tab:hover,.mob-tab.active{color:var(--blue-lt);background:rgba(59,130,246,.08)}
+.mob-tab svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mob-tab .mob-badge{
+  position:absolute;top:4px;right:18px;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--blue);color:#fff;
+  font-size:8px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+@media(max-width:860px){
+  .dash-mob-bar{display:block}
+  .main{padding-bottom:80px}
+}
+@media(max-width:600px){
+  .page{padding:16px 12px 88px}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .topnav .nav-sep,.topnav .nav-crumb{display:none}
 }
 @media(max-width:600px){
   .stats-row{grid-template-columns:1fr 1fr}
@@ -1840,6 +1889,45 @@ renderResponses();
 renderTimeline();
 renderDocs();
 renderHeatmap();
+
+/* ── MOBILE TAB BAR ── */
+function setMobTab(page) {
+  document.querySelectorAll('.mob-tab').forEach(t => t.classList.remove('active'));
+  const map = {
+    overview:'mobTabOverview', applications:'mobTabApps',
+    visa:'mobTabVisa', documents:'mobTabDocs', chat:'mobTabChat'
+  };
+  const el = document.getElementById(map[page]);
+  if (el) el.classList.add('active');
+}
+
 </script>
+
+<!-- ── MOBILE BOTTOM TAB BAR ── -->
+<div class="dash-mob-bar">
+  <div class="mob-tab-row">
+    <button class="mob-tab active" id="mobTabOverview" onclick="navigateTo('overview');setMobTab('overview')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Özet
+    </button>
+    <button class="mob-tab" id="mobTabApps" onclick="navigateTo('applications');setMobTab('applications')">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+      Başvurular
+      <span class="mob-badge">8</span>
+    </button>
+    <button class="mob-tab" id="mobTabVisa" onclick="navigateTo('visa');setMobTab('visa')">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Vize
+    </button>
+    <button class="mob-tab" id="mobTabDocs" onclick="navigateTo('documents');setMobTab('documents')">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Belgeler
+    </button>
+    <button class="mob-tab" id="mobTabChat" onclick="navigateTo('overview');document.getElementById('chatFab').click();setMobTab('chat')">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h.01M15 9h.01M9 15h6"/></svg>
+      AI
+    </button>
+  </div>
+</div>
 </body>
 </html>
