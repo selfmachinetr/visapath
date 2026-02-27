@@ -911,6 +911,22 @@ h1 .grad{
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .toast svg{width:14px;height:14px;stroke:#34d399;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
+
+/* ── TEK PLAN KARTI — güçlü odak tasarımı ─── */
+.price-card-pro{
+  position:relative;
+}
+.price-card-pro::before{
+  content:'';position:absolute;inset:-1px;border-radius:26px;
+  background:linear-gradient(135deg,rgba(245,158,11,.35),rgba(245,158,11,.05),rgba(245,158,11,.25));
+  z-index:-1;
+}
+.pricing-features-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+  margin-bottom:32px;
+}
+@media(max-width:480px){.pricing-features-grid{grid-template-columns:1fr}}
+
 /* ── RESPONSIVE ───────────────────────────────── */
 @media(max-width:1024px){
   .sidebar{display:none}
@@ -998,7 +1014,7 @@ h1 .grad{
 .pricing-cards{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
 .price-card{border-radius:24px;padding:36px 30px;position:relative;overflow:hidden;transition:transform .22s}
 .price-card:hover{transform:translateY(-5px)}
-.price-card-free{background:var(--bg2);border:1px solid var(--border2)}
+
 .price-card-pro{background:linear-gradient(145deg,#11200a,#090f05);border:1px solid rgba(245,158,11,.28);animation:proGlow 4s ease-in-out infinite}
 .price-card-pro::before{content:'';position:absolute;top:-1px;left:15%;right:15%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
 .price-card-pro::after{content:'';position:absolute;top:0;left:0;right:0;height:180px;background:radial-gradient(ellipse at 50% -30%,rgba(245,158,11,.1),transparent 70%);pointer-events:none}
@@ -1084,7 +1100,7 @@ h1 .grad{
     </div>
 
     <div class="nav-right">
-      <a href="#pricing" class="nav-plan-link"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Pro'ya Geç</a><button class="btn-ghost" onclick="showAuth()" style="display:inline-flex;align-items:center;gap:7px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Giriş Yap</button>
+      <a href="#pricing" class="nav-plan-link"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>₺250/ay'dan Başla</a><button class="btn-ghost" onclick="showAuth()" style="display:inline-flex;align-items:center;gap:7px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Giriş Yap</button>
       <a href="dashboard.html" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px">
         Dashboard'a Git
         <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -1123,30 +1139,30 @@ h1 .grad{
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           <div class="field-wrap">
             <label class="field-label">Pozisyon</label>
-            <input id="searchPos" class="field-input" type="text" placeholder="e.g. Software Engineer"/>
+            <input id="searchPos" class="field-input" type="text" placeholder="e.g. Software Engineer" oninput="renderJobs()" onkeydown="if(event.key==='Enter')renderJobs()"/>
           </div>
         </div>
         <div class="search-field">
           <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
           <div class="field-wrap">
             <label class="field-label">Şehir / Ülke</label>
-            <input id="searchCity" class="field-input" type="text" placeholder="e.g. Berlin, Almanya"/>
+            <input id="searchCity" class="field-input" type="text" placeholder="e.g. Londra, Almanya" oninput="renderJobs()" onkeydown="if(event.key==='Enter')renderJobs()"/>
           </div>
         </div>
         <div class="search-field">
           <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
           <div class="field-wrap" style="flex:1">
             <label class="field-label">Sektör</label>
-            <select id="searchSector" class="field-select">
+            <select id="searchSector" class="field-select" onchange="renderJobs()">
               <option value="">Tüm Sektörler</option>
-              <option>Yazılım & IT</option>
-              <option>Sağlık</option>
-              <option>Mühendislik</option>
-              <option>Ar-Ge / Bilim</option>
-              <option>Hukuk</option>
-              <option>Finans</option>
-              <option>Eğitim</option>
-              <option>Lojistik</option>
+              <option value="Yazılım & IT">💻 Yazılım & IT</option>
+              <option value="Mühendislik">⚙️ Mühendislik</option>
+              <option value="Ar-Ge / Bilim">🔬 Ar-Ge / Bilim</option>
+              <option value="Finans">📈 Finans</option>
+              <option value="Sağlık">🏥 Sağlık</option>
+              <option value="Hukuk">⚖️ Hukuk</option>
+              <option value="Eğitim">🎓 Eğitim</option>
+              <option value="Lojistik">📦 Lojistik</option>
             </select>
           </div>
           <svg viewBox="0 0 24 24" style="width:13px;height:13px;flex-shrink:0;color:var(--text4);stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -1159,7 +1175,7 @@ h1 .grad{
           <button class="chip" onclick="quickSearch('Sağlık')">Sağlık</button>
           <button class="chip" onclick="quickSearch('EU Blue Card')">EU Blue Card</button>
         </div>
-        <button class="btn-search" onclick="filterJobs()">
+        <button class="btn-search" onclick="renderJobs()">
           <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           Ara
         </button>
@@ -1843,19 +1859,66 @@ function buildJobCard(job) {
 }
 
 /* ─ RENDER JOBS ─ */
-function renderJobs(){
-  const pos    = (document.getElementById('searchPos').value||'').toLowerCase();
+async function renderJobs(){
+  // ── Tüm arama girdilerini oku ─────────────────────────
+  const pos    = (document.getElementById('searchPos').value    || '').toLowerCase().trim();
+  const city   = (document.getElementById('searchCity').value   || '').toLowerCase().trim();
+  const sector = (document.getElementById('searchSector').value || '').toLowerCase().trim();
+
   const stack  = document.getElementById('jobsStack');
   const lmw    = document.getElementById('loadMoreWrap');
   const cnt    = document.getElementById('countNum');
   const lbl    = document.getElementById('activeFilterLabel');
 
-  const filtered = JOBS.filter(j => {
-    const mPos    = !pos || j.title.toLowerCase().includes(pos) || j.company.toLowerCase().includes(pos);
-    const mSector = selectedSectors.length===0 || selectedSectors.includes(j.sector);
-    return mPos && mSector;
+  // ── Worker bağlıysa gerçek API'den çek ───────────────
+  let jobsSource = JOBS;
+  if (WORKER_URL) {
+    const apiJobs = await fetchJobsFromAPI({ q: pos, city, sector });
+    if (apiJobs && apiJobs.length >= 0) {
+      jobsSource = apiJobs.map(j => ({
+        ...j,
+        tags: typeof j.tags === 'string' ? JSON.parse(j.tags || '[]') : (j.tags || []),
+      }));
+    }
+  }
+
+  const filtered = jobsSource.filter(j => {
+    // Pozisyon: başlık, şirket adı veya tag'lerde ara
+    const mPos = !pos ||
+      j.title.toLowerCase().includes(pos) ||
+      j.company.toLowerCase().includes(pos) ||
+      j.tags.some(t => t.toLowerCase().includes(pos));
+
+    // Şehir / Ülke: location alanında ara
+    const mCity = !city ||
+      j.location.toLowerCase().includes(city) ||
+      j.country_code.toLowerCase().includes(city);
+
+    // Sektör: dropdown seçimi VEYA sol sidebar seçimi
+    const mSector =
+      (!sector || j.sector.toLowerCase().includes(sector)) &&
+      (selectedSectors.length === 0 || selectedSectors.includes(j.sector));
+
+    return mPos && mCity && mSector;
   });
 
+  // ── Sonuç badge'i animasyonla güncelle ───────────────
+  if (cnt) {
+    cnt.textContent = filtered.length;
+    cnt.style.transform = 'scale(1.15)';
+    setTimeout(() => { if(cnt) cnt.style.transform = 'scale(1)'; }, 200);
+  }
+
+  // ── Aktif filtre etiketi ──────────────────────────────
+  const activeParts = [];
+  if (pos)    activeParts.push(`"${pos}"`);
+  if (city)   activeParts.push(city);
+  if (sector) activeParts.push(sector);
+  if (selectedSectors.length > 0) activeParts.push(...selectedSectors);
+
+  if (lbl) lbl.textContent = activeParts.length > 0 ? '· ' + activeParts.join(', ') : '';
+
+  // ── Job kartlarını render et ──────────────────────────
   stack.innerHTML = filtered.length
     ? filtered.map(buildJobCard).join('')
     : `<div class="empty">
@@ -1864,9 +1927,7 @@ function renderJobs(){
         <small>Filtreleri temizleyip tekrar deneyin</small>
       </div>`;
 
-  cnt.textContent = filtered.length;
-  lmw.style.display = filtered.length > 0 ? 'flex' : 'none';
-  lbl.textContent = selectedSectors.length>0 ? '· '+selectedSectors.join(', ') : '';
+  if (lmw) lmw.style.display = filtered.length > 0 ? 'flex' : 'none';
 }
 
 /* ─ FILTER LOGIC ─ */
@@ -1902,7 +1963,7 @@ function updateFilterUI(){
   badge.style.display = total>0?'inline':'none';
   clr.style.display   = total>0?'block':'none';
 }
-function filterJobs(){ renderJobs(); }
+function filterJobs(){ renderJobs(); }  // async — Promise döner, await gerekmez
 function quickSearch(val){
   // map label to sector or just search
   const sectorMatch = SECTORS.find(s=>s.label===val);
@@ -1932,7 +1993,7 @@ function updateLimitBar(){
   if(fill) fill.style.width = pct+'%';
   if(txt){
     const rem = Math.max(FREE_MSG_LIMIT-userMsgCount,0);
-    txt.textContent = rem > 0 ? rem+' ücretsiz mesaj kaldı' : 'Limit doldu';
+    txt.textContent = rem > 0 ? rem+' demo mesajı kaldı' : 'Demo limiti doldu';
     if(rem===0) txt.style.color='#f87171';
   }
 }
@@ -1951,8 +2012,8 @@ function blockChat(){
   blocked.innerHTML = `
     <div class="chat-blocked-icon"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
     <div class="chat-blocked-title">Günlük ücretsiz limitin doldu</div>
-    <div class="chat-blocked-sub">AI Danışman ile <strong style="color:var(--text2)">günde 3 mesaj</strong> ücretsiz. Devam etmek için Pro planına geç.</div>
-    <button class="btn-upgrade-chat" onclick="showPaywall('chat')">Pro ile Devam Et — $9.99/ay</button>
+    <div class="chat-blocked-sub">3 demo mesajın doldu. Sınırsız AI danışman için abonelik gerekli.</div>
+    <button class="btn-upgrade-chat" onclick="showPaywall('chat')">Abone Ol — ₺250/ay</button>
   `;
   panel.appendChild(blocked);
 }
@@ -2007,7 +2068,7 @@ const PAYWALL_COPY = {
   pricing:{
     badge:'✦ Pro Plan',
     title:'Pro ile her kapı açık',
-    sub:'Sınırsız ilan, AI danışman, maaş verileri ve daha fazlası sadece <strong>$9.99/ay</strong>.'
+    sub:'Tüm özellikler dahil — sınırsız ilan, AI danışman, maaş ve vize verileri. Sadece <strong style="color:var(--gold-lt)">₺250/ay</strong>.'
   }
 };
 function showPaywall(type='chat'){
@@ -2058,47 +2119,150 @@ document.addEventListener('keydown', e => {
 /* ═══════════════════════════════════════════════════════════
    DATA LAYER — Live Sponsor Feed
    Production'da bu fonksiyonlar FastAPI endpoint'lerini çağırır:
-     GET /api/sponsors/stats   → aggregated counts
-     GET /api/sponsors/uk      → GOV.UK CSV'den parse edilmiş liste
-     GET /api/sponsors/de      → Bundesagentur API sonuçları
-   Şu an: gerçekçi mock + simüle edilmiş network delay
+     GET /api/stats   → Toplam sponsor/iş sayısı, son sync
+     GET /api/jobs    → Filtrelenmiş iş ilanları
+     GET /api/sponsors → Sponsor arama
+   Worker deploy sonrası WORKER_URL'i güncelle.
 ═══════════════════════════════════════════════════════════ */
+
+/* ── WORKER URL — Deploy sonrası buraya gerçek URL'i yaz ──
+   Örnek: 'https://visapath-worker.memudar.workers.dev'
+   wrangler deploy çıktısında göreceksin.
+   Boş bırakılırsa → demo/mock data kullanılır.
+─────────────────────────────────────────────────────────── */
+const WORKER_URL = '';  // ← BURAYA WORKER URL'İNİ YAZ
+
+/* ── API İSTEK YARDIMCISI ──────────────────────────────── */
+async function apiGet(path, params = {}) {
+  // Worker URL yoksa mock'a düş
+  if (!WORKER_URL) return null;
+
+  const url = new URL(WORKER_URL + path);
+  Object.entries(params).forEach(([k, v]) => { if (v) url.searchParams.set(k, v); });
+
+  const res = await fetch(url.toString(), {
+    headers: { 'Accept': 'application/json' },
+    signal : AbortSignal.timeout(8000),
+  });
+
+  if (!res.ok) throw new Error(`API ${path} → ${res.status}`);
+  return res.json();
+}
+
+/* ── MOCK DATA (Worker bağlı değilken) ─────────────────── */
+const MOCK_STATS = {
+  uk: {
+    count    : 52_341,
+    lastSync : new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
+    source   : 'GOV.UK Register of Licensed Sponsors',
+    sourceUrl: 'https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers',
+  },
+  de: {
+    count : 8_412,
+    source: 'Bundesagentur für Arbeit',
+  },
+  aggregate: {
+    totalSponsors   : 60_753,
+    totalJobs       : 12_847,
+    avgApprovalRate : 0.94,
+    avgResponseHours: 21,
+    totalCandidates : 48_200,
+    countries       : 48,
+  },
+  lastSync: {
+    at        : new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(),
+    rowsSynced: 52_341,
+    status    : 'success',
+  },
+};
 
 /**
  * fetchSponsorStats()
- * Production: fetch('/api/sponsors/stats').then(r=>r.json())
- * UK kayıt sayısı GOV.UK'tan haftalık çekilen CSV'den gelir.
- * DE kayıt sayısı Bundesagentur für Arbeit API'sinden gelir.
+ * WORKER_URL ayarlıysa → gerçek Cloudflare Worker API'si
+ * Ayarlanmamışsa        → MOCK_STATS (demo mod)
  */
 async function fetchSponsorStats() {
-  // Simulate network delay (50-120ms, gerçekçi API yanıt süresi)
-  await new Promise(r => setTimeout(r, 50 + Math.random() * 70));
+  // Gerçek API dene
+  if (WORKER_URL) {
+    try {
+      const data = await apiGet('/api/stats');
+      console.log('[VisaPath] Live stats from Worker:', data);
+      // Worker formatını normalize et
+      return normalizeStats(data);
+    } catch (err) {
+      console.warn('[VisaPath] Worker unavailable, falling back to mock:', err.message);
+    }
+  }
 
-  // Bu değerler gerçek scraper çıktısından alınır:
-  // UK: GOV.UK CSV → ~52.000 aktif sponsor şirket (2024 Q4)
-  // DE: Bundesagentur Blue Card listesi → ~8.400 kayıt
+  // Mock: kısa simüle gecikme (demo için gerçekçi)
+  await new Promise(r => setTimeout(r, 60 + Math.random() * 80));
+  return normalizeMockStats(MOCK_STATS);
+}
+
+/** Worker API yanıtını frontend'in beklediği formata çevirir */
+function normalizeStats(data) {
+  const uk  = data.uk  || {};
+  const de  = data.de  || {};
+  const agg = data.aggregate || {};
+  const sync = data.lastSync || {};
+
   return {
     uk: {
-      count: 52_341,
-      lastFetch: new Date(Date.now() - 1000 * 60 * 60 * 3), // 3 saat önce
-      source: 'GOV.UK Register of Licensed Sponsors',
-      url: 'https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers',
+      count    : uk.count || 0,
+      lastFetch: sync.at ? new Date(sync.at) : new Date(),
+      source   : uk.source || 'GOV.UK Register of Licensed Sponsors',
+      url      : uk.sourceUrl || 'https://www.gov.uk/government/publications/register-of-licensed-sponsors-workers',
     },
     de: {
-      count: 8_412,
-      lastFetch: new Date(Date.now() - 1000 * 60 * 60 * 6), // 6 saat önce
-      source: 'Bundesagentur für Arbeit',
-      url: 'https://www.arbeitsagentur.de/unternehmen/personalsuche/fachkraefteeinwanderung',
+      count    : de.count || 0,
+      lastFetch: new Date(Date.now() - 1000 * 60 * 60 * 6),
+      source   : de.source || 'Bundesagentur für Arbeit',
     },
     aggregate: {
-      totalSponsors     : 52_341 + 8_412,
-      totalJobs         : 12_847,
-      avgApprovalRate   : 0.94,
-      avgResponseHours  : 21,
-      totalCandidates   : 48_200,
-      countries         : 48,
-    }
+      totalSponsors   : agg.totalSponsors    || uk.count + de.count || 0,
+      totalJobs       : agg.totalJobs        || 0,
+      avgApprovalRate : agg.avgApprovalRate  || 0.92,
+      avgResponseHours: agg.avgResponseHours || 21,
+      totalCandidates : agg.totalCandidates  || 48200,
+      countries       : agg.countries        || 48,
+    },
   };
+}
+
+function normalizeMockStats(data) {
+  return {
+    uk: {
+      ...data.uk,
+      lastFetch: new Date(data.uk.lastSync || Date.now() - 3 * 3600000),
+    },
+    de: {
+      ...data.de,
+      lastFetch: new Date(Date.now() - 6 * 3600000),
+    },
+    aggregate: data.aggregate,
+  };
+}
+
+/**
+ * fetchJobsFromAPI(filters)
+ * Worker bağlıysa gerçek DB'den, değilse JOBS array'inden döner.
+ */
+async function fetchJobsFromAPI(filters = {}) {
+  if (!WORKER_URL) return null; // renderJobs() JOBS array'ini kullanır
+
+  try {
+    const data = await apiGet('/api/jobs', {
+      q      : filters.q      || '',
+      city   : filters.city   || '',
+      sector : filters.sector || '',
+      visa   : filters.visa   || '',
+      limit  : 50,
+    });
+    return data?.jobs || null;
+  } catch (err) {
+    console.warn('[VisaPath] Jobs API failed, using local data:', err.message);
+    return null;
+  }
 }
 
 /**
@@ -2178,8 +2342,10 @@ async function initLiveData() {
 
     const lastUpdatedEl = document.getElementById('lastUpdated');
     const nextUpdateEl  = document.getElementById('nextUpdate');
-    // Most recent fetch
-    const mostRecent = data.uk.lastFetch > data.de.lastFetch ? data.uk.lastFetch : data.de.lastFetch;
+    // En güncel fetch zamanı
+    const ukFetch = data.uk.lastFetch instanceof Date ? data.uk.lastFetch : new Date(data.uk.lastFetch || Date.now());
+    const deFetch = data.de.lastFetch instanceof Date ? data.de.lastFetch : new Date(data.de.lastFetch || Date.now() - 21600000);
+    const mostRecent = ukFetch > deFetch ? ukFetch : deFetch;
     if (lastUpdatedEl) lastUpdatedEl.textContent = formatRelativeTime(mostRecent);
 
     // Next scheduled update: daily 00:00 UTC
@@ -2332,6 +2498,36 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+
+/* ── WORKER HEALTH CHECK ──────────────────────────────────
+   Geliştirici konsolunda bağlantı durumunu gösterir.
+   WORKER_URL ayarlanmamışsa demo modunu bildirir.
+───────────────────────────────────────────────────────── */
+(async function checkWorker() {
+  if (!WORKER_URL) {
+    console.info(
+      '%c[VisaPath] Demo mod aktif.%c WORKER_URL boş.\n' +
+      'Gerçek veri için worker.js'i deploy et ve WORKER_URL'i güncelle.',
+      'color:#f59e0b;font-weight:bold', 'color:#94a3b8'
+    );
+    return;
+  }
+  try {
+    const res  = await fetch(WORKER_URL + '/api/health', { signal: AbortSignal.timeout(5000) });
+    const data = await res.json();
+    if (data.status === 'healthy') {
+      console.info(
+        `%c[VisaPath] ✅ Worker bağlı%c\nDB: ${data.db} · Sponsors: ${data.sponsors?.toLocaleString('tr-TR')} · Son sync: ${data.lastSync}`,
+        'color:#10b981;font-weight:bold', 'color:#94a3b8'
+      );
+    } else {
+      console.warn('[VisaPath] Worker degraded:', data);
+    }
+  } catch (err) {
+    console.warn('[VisaPath] Worker erişilemiyor:', err.message, '\nDemo mod kullanılıyor.');
+  }
+})();
+
 /* ─ INIT ─ */
 buildSidebar();
 renderJobs();
@@ -2348,56 +2544,31 @@ initLiveData();
       <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       Planlar
     </div>
-    <h2 class="pricing-headline">Vize yolculuğuna<br><span class="gold">doğru araçlarla</span> başla</h2>
-    <p class="pricing-sub">Ücretsiz başla, istediğinde Pro'ya geç. Her iki plan da vize sponsorlu şirketlere erişim sağlar.</p>
+    <h2 class="pricing-headline">Vize yolculuğunun<br><span class="gold">tek bilet fiyatı</span></h2>
+    <p class="pricing-sub">Sınırsız erişim, AI danışman, gerçek vize verileri. Her şey dahil — aylık <strong style="color:var(--gold-lt)">₺250</strong>.</p>
 
     <div class="pricing-cards">
-      <!-- FREE -->
-      <div class="price-card price-card-free">
-        <div class="plan-icon plan-icon-free">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        </div>
-        <div class="plan-name plan-name-free">Free</div>
-        <div class="plan-price plan-price-free">$0<span class="plan-period"> / ay</span></div>
-        <p class="plan-desc">Temel arama ve ilan görüntüleme. Sınırlı erişimle başlayın.</p>
-        <ul class="plan-features">
-          <li class="plan-feature"><div class="feature-check fc-free"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-free">Günde <strong style="color:var(--text2)">10</strong> ilan görüntüleme</span></li>
-          <li class="plan-feature"><div class="feature-check fc-free"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-free">Temel sektör filtreleri</span></li>
-          <li class="plan-feature"><div class="feature-check fc-free"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-free">AI Danışman — günde <strong style="color:var(--text2)">3 mesaj</strong></span></li>
-          <li class="plan-feature"><div class="feature-check fc-free"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-free">Temel şirket bilgisi</span></li>
-          <li class="plan-feature">
-            <div class="feature-locked"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Maaş verileri gizli</span></div>
-          </li>
-          <li class="plan-feature">
-            <div class="feature-locked"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Vize Şans Analizi</span></div>
-          </li>
-          <li class="plan-feature">
-            <div class="feature-locked"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>Başvuru Takip Paneli</span></div>
-          </li>
-        </ul>
-        <button class="btn-plan-free">Ücretsiz Başla</button>
-      </div>
-
       <!-- PRO -->
       <div class="price-card price-card-pro">
-        <div class="pro-badge"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>En Popüler</div>
+        <div class="pro-badge"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Tam Erişim</div>
         <div class="plan-icon plan-icon-pro">
           <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
-        <div class="plan-name plan-name-pro">Pro</div>
-        <div class="plan-price plan-price-pro">$9.99<span class="plan-period" style="color:var(--gold-lt);opacity:.7"> / ay</span></div>
-        <p class="plan-desc" style="color:#9a9a60">Sınırsız erişim. AI destekli analiz. Hızlı vize yolculuğu.</p>
-        <ul class="plan-features">
-          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro"><strong style="color:var(--gold-lt)">Sınırsız</strong> ilan görüntüleme</span></li>
-          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">Tüm filtreler + gelişmiş arama</span></li>
-          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">AI Danışman — <strong style="color:var(--gold-lt)">sınırsız</strong> mesaj</span></li>
-          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro"><strong style="color:var(--gold-lt)">Maaş verileri</strong> tam görünür</span></li>
-          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro"><strong style="color:var(--gold-lt)">Vize Şans Analizi</strong> — profiline göre % hesapla</span></li>
-          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">Başvuru Takip Paneli + belge yönetimi</span></li>
-          <li class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">Öncelikli destek &amp; yeni özellik erişimi</span></li>
-        </ul>
-        <button class="btn-plan-pro" onclick="showPaywall('pricing')">Pro'ya Geç — $9.99/ay</button>
-        <p class="plan-desc" style="margin:12px 0 0;font-size:11px;text-align:center;color:var(--text4)">Kredi kartı gerekli değil · İstediğin zaman iptal et</p>
+        <div class="plan-name plan-name-pro">VisaPath Pro</div>
+        <div class="plan-price plan-price-pro">₺250<span class="plan-period" style="color:var(--gold-lt);opacity:.7"> / ay</span></div>
+        <p class="plan-desc" style="color:#9a9a60">Tüm özellikler dahil. Sınır yok. Vize yolculuğunu hızlandır.</p>
+        <div class="pricing-features-grid">
+          <div class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro"><strong style="color:var(--gold-lt)">Sınırsız</strong> ilan görüntüleme</span></div>
+          <div class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro"><strong style="color:var(--gold-lt)">Gerçek maaş</strong> verileri</span></div>
+          <div class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">Tüm filtreler + <strong style="color:var(--gold-lt)">gelişmiş arama</strong></span></div>
+          <div class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro"><strong style="color:var(--gold-lt)">Vize Şans Analizi</strong> — %hesapla</span></div>
+          <div class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">AI Danışman — <strong style="color:var(--gold-lt)">sınırsız</strong> mesaj</span></div>
+          <div class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">Başvuru Takip + belge yönetimi</span></div>
+          <div class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">UK &amp; DE sponsor veri erişimi</span></div>
+          <div class="plan-feature"><div class="feature-check fc-pro"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="feature-text-pro">Öncelikli destek &amp; yeni özellikler</span></div>
+        </div>
+        <button class="btn-plan-pro" onclick="showPaywall('pricing')">Hemen Başla — ₺250/ay</button>
+        <p class="plan-desc" style="margin:12px 0 0;font-size:11px;text-align:center;color:var(--text4)">Kredi/banka kartı · İstediğin zaman iptal et · Türk Lirası</p>
       </div>
     </div>
 
@@ -2446,9 +2617,9 @@ initLiveData();
         Sınırsız ilan görüntüleme
       </div>
     </div>
-    <button class="paywall-cta" onclick="hidePaywall()">Pro'ya Geç — $9.99/ay</button>
-    <p class="paywall-price-note">Sadece <strong>$9.99/ay</strong> · İstediğin zaman iptal et</p>
-    <button class="paywall-dismiss" onclick="hidePaywall()">Şimdi değil, ücretsiz devam et</button>
+    <button class="paywall-cta" onclick="hidePaywall()">Pro'ya Geç — ₺250/ay</button>
+    <p class="paywall-price-note">Sadece <strong>₺250/ay</strong> · İstediğin zaman iptal et</p>
+    <button class="paywall-dismiss" onclick="hidePaywall()" style="opacity:.5">Şimdi değil, daha sonra karar ver</button>
   </div>
 </div>
 
@@ -2470,7 +2641,7 @@ initLiveData();
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
     </div>
     <h3 class="auth-title">VisaPath'e Hoş Geldin</h3>
-    <p class="auth-sub">Vize yolculuğuna başlamak için giriş yap.<br/><strong>60.000+ sponsor şirkete</strong> erişim sağla.</p>
+    <p class="auth-sub">Vize yolculuğuna başlamak için giriş yap.<br/><strong>60.000+ sponsor şirkete</strong> tam erişim — <strong style="color:var(--gold-lt)">₺250/ay</strong>.</p>
 
     <!-- Demo fast entry -->
     <button class="auth-demo-btn" onclick="demoLogin()">

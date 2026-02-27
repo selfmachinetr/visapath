@@ -1,0 +1,47 @@
+# VisaPath Worker — Cloudflare Wrangler Yapılandırması
+# Docs: https://developers.cloudflare.com/workers/wrangler/configuration/
+
+name              = "visapath-worker"
+main              = "worker.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# ── Cron Trigger ─────────────────────────────────
+# Her Pazartesi 06:00 UTC — GOV.UK genellikle Pazartesi günceller
+# Test için: wrangler trigger cron <cron_id>
+[triggers]
+crons = ["0 6 * * 1"]
+
+# ── D1 Database ──────────────────────────────────
+# Oluştur: wrangler d1 create visapath-db
+# Çıktıdaki database_id'yi aşağıya yaz
+[[d1_databases]]
+binding       = "DB"
+database_name = "visapath-db"
+database_id   = "BURAYA_D1_DATABASE_ID_YAZ"
+
+# ── KV Namespace (cache için) ────────────────────
+# Oluştur: wrangler kv:namespace create CACHE
+# Çıktıdaki id'yi aşağıya yaz
+[[kv_namespaces]]
+binding = "KV"
+id      = "BURAYA_KV_NAMESPACE_ID_YAZ"
+
+# ── Ortam Değişkenleri ───────────────────────────
+[vars]
+ENVIRONMENT = "production"
+
+# !! SYNC_SECRET'ı wrangler secret olarak ekle, buraya yazma:
+# wrangler secret put SYNC_SECRET
+# → "production-gizli-anahtar-buraya" gibi güçlü bir değer gir
+
+# ── Gözlemlenebilirlik ───────────────────────────
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+# ── Production Rotası ────────────────────────────
+# Custom domain bağlandıktan sonra aktif et:
+# [[routes]]
+# pattern = "visapath.app/api/*"
+# zone_name = "visapath.app"
